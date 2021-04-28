@@ -21,7 +21,7 @@ public class DeptController {
     private DeptService deptService;
 
     @GetMapping("/get/{id}")
-    public ResultDTO<Dept> getById(@PathVariable(value = "Long id") Long id) {
+    public ResultDTO<Dept> getById(@PathVariable(value = "id") Long id) {
         Dept dept = deptService.getById(id);
         return new ResultDTO<>(true, ResultCode.SUCCESS, ResultCode.MSG_SUCCESS, dept);
     }
@@ -75,7 +75,7 @@ public class DeptController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResultDTO<Boolean> deleteOne(@PathVariable(value = "Long id") Long id) {
+    public ResultDTO<Boolean> deleteOne(@PathVariable(value = "id") Long id) {
         return new ResultDTO<>(true, ResultCode.SUCCESS, ResultCode.MSG_SUCCESS, deptService.deleteById(id) == 1);
     }
 

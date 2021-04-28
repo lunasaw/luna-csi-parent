@@ -40,15 +40,7 @@
             <if test="jobRemark != null">
                 and job_remark = #{jobRemark,jdbcType=VARCHAR}
             </if>
-            <if test="createTime != null">
-                and create_time = #{createTime,jdbcType=TIMESTAMP}
-            </if>
-            <if test="modifiedTime != null">
-                and modified_time = #{modifiedTime,jdbcType=TIMESTAMP}
-            </if>
-            <if test="version != null">
-                and version = #{version,jdbcType=OTHER}
-            </if>
+            and version = #{version,jdbcType=OTHER}
         </where>
     </select>
 
@@ -67,15 +59,7 @@
             <if test="jobRemark != null">
                 and job_remark = #{jobRemark,jdbcType=VARCHAR}
             </if>
-            <if test="createTime != null">
-                and create_time = #{createTime,jdbcType=TIMESTAMP}
-            </if>
-            <if test="modifiedTime != null">
-                and modified_time = #{modifiedTime,jdbcType=TIMESTAMP}
-            </if>
-            <if test="version != null">
-                and version = #{version,jdbcType=OTHER}
-            </if>
+            and version = #{version,jdbcType=OTHER}
         </where>
     </select>
 
@@ -103,15 +87,9 @@
             <if test="jobRemark != null">
                 job_remark,
             </if>
-            <if test="createTime != null">
-                create_time,
-            </if>
-            <if test="modifiedTime != null">
-                modified_time,
-            </if>
-            <if test="version != null">
-                version,
-            </if>
+            create_time,
+            modified_time,
+            version,
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -123,27 +101,22 @@
             <if test="jobRemark != null">
                 #{jobRemark,jdbcType=VARCHAR},
             </if>
-            <if test="createTime != null">
-                #{createTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="modifiedTime != null">
-                #{modifiedTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="version != null">
-                #{version,jdbcType=OTHER},
-            </if>
+            now(),
+            now(),
+            0,
         </trim>
     </insert>
 
     <!--批量新增所有列，列表长度不能为0，且列表id统一为null或者统一不为null-->
     <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true" parameterType="list">
         insert into tb_job
-        (id, job_name, job_remark, create_time, modified_time, version)
+        (job_name, job_remark, create_time, modified_time, version)
         values
         <foreach item="item" collection="list" separator="," open="" close="" index="index">
-            (#{item.id,jdbcType=INTEGER}, #{item.jobName,jdbcType=VARCHAR}, #{item.jobRemark,jdbcType=VARCHAR},
-            #{item.createTime,jdbcType=TIMESTAMP}, #{item.modifiedTime,jdbcType=TIMESTAMP},
-            #{item.version,jdbcType=OTHER})
+            (#{item.jobName,jdbcType=VARCHAR}, #{item.jobRemark,jdbcType=VARCHAR},
+            now(),
+            now(),
+            0)
         </foreach>
     </insert>
 
@@ -160,14 +133,10 @@
             <if test="createTime != null">
                 create_time = #{createTime,jdbcType=TIMESTAMP},
             </if>
-            <if test="modifiedTime != null">
-                modified_time = #{modifiedTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="version != null">
-                version = #{version,jdbcType=OTHER},
-            </if>
+            modified_time = now(),
+            version = version + 1,
         </set>
-        where id = #{id,jdbcType=INTEGER}
+        where id = #{id,jdbcType=INTEGER} and version = #{version,jdbcType=OTHER}
     </update>
 
     <!--通过表字段修改实体属性不为null的列-->
@@ -180,35 +149,18 @@
             <if test="where.jobRemark == null and set.jobRemark != null and set.jobRemark != ''">
                 job_remark = #{set.jobRemark,jdbcType=VARCHAR},
             </if>
-            <if test="where.createTime == null and set.createTime != null">
-                create_time = #{set.createTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="where.modifiedTime == null and set.modifiedTime != null">
-                modified_time = #{set.modifiedTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="where.version == null and set.version != null">
-                version = #{set.version,jdbcType=OTHER},
-            </if>
+            modified_time = now(),
+            version = version + 1,
         </set>
         <where>
-            <if test="where.id != null">
-                and id = #{where.id,jdbcType=INTEGER}
-            </if>
+            and id = #{where.id,jdbcType=INTEGER}
             <if test="where.jobName != null">
                 and job_name = #{where.jobName,jdbcType=VARCHAR}
             </if>
             <if test="where.jobRemark != null">
                 and job_remark = #{where.jobRemark,jdbcType=VARCHAR}
             </if>
-            <if test="where.createTime != null">
-                and create_time = #{where.createTime,jdbcType=TIMESTAMP}
-            </if>
-            <if test="where.modifiedTime != null">
-                and modified_time = #{where.modifiedTime,jdbcType=TIMESTAMP}
-            </if>
-            <if test="where.version != null">
-                and version = #{where.version,jdbcType=OTHER}
-            </if>
+            and version = #{where.version,jdbcType=OTHER}
         </where>
     </update>
 
@@ -226,19 +178,14 @@
                     when id = #{item.id} then #{item.jobRemark}
                 </foreach>
             </trim>
-            <trim prefix="create_time = case" suffix="end,">
-                <foreach collection="list" item="item" index="index">
-                    when id = #{item.id} then #{item.createTime}
-                </foreach>
-            </trim>
             <trim prefix="modified_time = case" suffix="end,">
                 <foreach collection="list" item="item" index="index">
-                    when id = #{item.id} then #{item.modifiedTime}
+                    when id = #{item.id} then now()
                 </foreach>
             </trim>
             <trim prefix="version = case" suffix="end,">
                 <foreach collection="list" item="item" index="index">
-                    when id = #{item.id} then #{item.version}
+                    when id = #{item.id} and version = #{item.version} then #{item.version} + 1
                 </foreach>
             </trim>
         </trim>
@@ -265,15 +212,7 @@
             <if test="jobRemark != null">
                 and job_remark = #{jobRemark,jdbcType=VARCHAR}
             </if>
-            <if test="createTime != null">
-                and create_time = #{createTime,jdbcType=TIMESTAMP}
-            </if>
-            <if test="modifiedTime != null">
-                and modified_time = #{modifiedTime,jdbcType=TIMESTAMP}
-            </if>
-            <if test="version != null">
-                and version = #{version,jdbcType=OTHER}
-            </if>
+            and id = #{id,jdbcType=INTEGER}
         </where>
     </delete>
 

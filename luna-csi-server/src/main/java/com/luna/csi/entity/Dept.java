@@ -15,6 +15,7 @@ public class Dept implements Serializable {
     private Long              id;
     /** 部门名称 */
     private String            deptName;
+    /** 备注 */
     private String            deptRemark;
     /** 创建时间 */
     private Date              createTime;

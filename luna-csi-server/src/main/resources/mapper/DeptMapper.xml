@@ -128,7 +128,7 @@
         values
         <foreach item="item" collection="list" separator="," open="" close="" index="index">
             (#{item.deptName,jdbcType=VARCHAR}, #{item.deptRemark,jdbcType=VARCHAR},
-            now(), now(), 0,
+            now(), now(), 0)
         </foreach>
     </insert>
 
@@ -142,14 +142,10 @@
             <if test="deptRemark != null and deptRemark != ''">
                 dept_remark = #{deptRemark,jdbcType=VARCHAR},
             </if>
-            <if test="modifiedTime != null">
-                modified_time = now(),
-            </if>
-            <if test="version != null">
-                version = version + 1,
-            </if>
+            modified_time = now(),
+            version = version + 1,
         </set>
-        where id = #{id,jdbcType=INTEGER} and version = #{version}
+        where id = #{id,jdbcType=INTEGER} and version = #{version,jdbcType=OTHER}
     </update>
 
     <!--通过表字段修改实体属性不为null的列-->
@@ -162,13 +158,8 @@
             <if test="where.deptRemark == null and set.deptRemark != null and set.deptRemark != ''">
                 dept_remark = #{set.deptRemark,jdbcType=VARCHAR},
             </if>
-
-            <if test="where.modifiedTime == null and set.modifiedTime != null">
-                modified_time = now(),
-            </if>
-            <if test="where.version == null and set.version != null">
-                version = #{set.version,jdbcType=OTHER} + 1,
-            </if>
+            modified_time = now(),
+            version = version + 1,
         </set>
         <where>
             <if test="where.id != null">
@@ -198,19 +189,14 @@
                     when id = #{item.id} then #{item.deptRemark}
                 </foreach>
             </trim>
-            <trim prefix="create_time = case" suffix="end,">
-                <foreach collection="list" item="item" index="index">
-                    when id = #{item.id} then #{item.createTime}
-                </foreach>
-            </trim>
             <trim prefix="modified_time = case" suffix="end,">
                 <foreach collection="list" item="item" index="index">
-                    when id = #{item.id} then #{item.modifiedTime}
+                    when id = #{item.id} then now()
                 </foreach>
             </trim>
             <trim prefix="version = case" suffix="end,">
                 <foreach collection="list" item="item" index="index">
-                    when id = #{item.id} then #{item.version}
+                    when id = #{item.id} and version = #{item.version} then #{item.version} + 1
                 </foreach>
             </trim>
         </trim>
@@ -237,15 +223,7 @@
             <if test="deptRemark != null">
                 and dept_remark = #{deptRemark,jdbcType=VARCHAR}
             </if>
-            <if test="createTime != null">
-                and create_time = #{createTime,jdbcType=TIMESTAMP}
-            </if>
-            <if test="modifiedTime != null">
-                and modified_time = #{modifiedTime,jdbcType=TIMESTAMP}
-            </if>
-            <if test="version != null">
-                and version = #{version,jdbcType=OTHER}
-            </if>
+            and id = #{id,jdbcType=INTEGER} and version = #{version,jdbcType=OTHER}
         </where>
     </delete>
 

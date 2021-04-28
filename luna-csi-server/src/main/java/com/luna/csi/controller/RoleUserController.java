@@ -21,7 +21,7 @@ public class RoleUserController {
     private RoleUserService roleUserService;
 
     @GetMapping("/get/{id}")
-    public ResultDTO<RoleUser> getById(@PathVariable(value = "Long id") Long id) {
+    public ResultDTO<RoleUser> getById(@PathVariable(value = "id") Long id) {
         RoleUser roleUser = roleUserService.getById(id);
         return new ResultDTO<>(true, ResultCode.SUCCESS, ResultCode.MSG_SUCCESS, roleUser);
     }
@@ -75,7 +75,7 @@ public class RoleUserController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResultDTO<Boolean> deleteOne(@PathVariable(value = "Long id") Long id) {
+    public ResultDTO<Boolean> deleteOne(@PathVariable(value = "id") Long id) {
         return new ResultDTO<>(true, ResultCode.SUCCESS, ResultCode.MSG_SUCCESS, roleUserService.deleteById(id) == 1);
     }
 

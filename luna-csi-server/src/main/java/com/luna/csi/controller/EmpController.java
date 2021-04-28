@@ -21,7 +21,7 @@ public class EmpController {
     private EmpService empService;
 
     @GetMapping("/get/{id}")
-    public ResultDTO<Emp> getById(@PathVariable(value = "Long id") Long id) {
+    public ResultDTO<Emp> getById(@PathVariable(value = "id") Long id) {
         Emp emp = empService.getById(id);
         return new ResultDTO<>(true, ResultCode.SUCCESS, ResultCode.MSG_SUCCESS, emp);
     }
@@ -75,7 +75,7 @@ public class EmpController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResultDTO<Boolean> deleteOne(@PathVariable(value = "Long id") Long id) {
+    public ResultDTO<Boolean> deleteOne(@PathVariable(value = "id") Long id) {
         return new ResultDTO<>(true, ResultCode.SUCCESS, ResultCode.MSG_SUCCESS, empService.deleteById(id) == 1);
     }
 
