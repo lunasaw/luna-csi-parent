@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.luna.csi.mapper.JobMapper">
+
+    <resultMap type="com.luna.csi.entity.Job" id="JobResultMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="jobName" column="job_name" jdbcType="VARCHAR"/>
+        <result property="jobRemark" column="job_remark" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="modifiedTime" column="modified_time" jdbcType="TIMESTAMP"/>
+        <result property="version" column="version" jdbcType="OTHER"/>
+    </resultMap>
+
+    <sql id="table_field">
+        id
+        , job_name, job_remark, create_time, modified_time, version
+    </sql>
+
+    <!--通过Id查询单个-->
+    <select id="getById" resultMap="JobResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="table_field"/>
+        from tb_job
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+
+    <!--通过实体不为空的属性作为筛选条件查询列表-->
+    <select id="listByEntity" resultMap="JobResultMap" parameterType="com.luna.csi.entity.Job">
+        select
+        <include refid="table_field"/>
+        from tb_job
+        <where>
+            <if test="id != null">
+                and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="jobName != null">
+                and job_name = #{jobName,jdbcType=VARCHAR}
+            </if>
+            <if test="jobRemark != null">
+                and job_remark = #{jobRemark,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="modifiedTime != null">
+                and modified_time = #{modifiedTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="version != null">
+                and version = #{version,jdbcType=OTHER}
+            </if>
+        </where>
+    </select>
+
+    <!--通过实体不为空的属性作为筛选条件查询单个-->
+    <select id="getByEntity" resultMap="JobResultMap" parameterType="com.luna.csi.entity.Job">
+        select
+        <include refid="table_field"/>
+        from tb_job
+        <where>
+            <if test="id != null">
+                and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="jobName != null">
+                and job_name = #{jobName,jdbcType=VARCHAR}
+            </if>
+            <if test="jobRemark != null">
+                and job_remark = #{jobRemark,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="modifiedTime != null">
+                and modified_time = #{modifiedTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="version != null">
+                and version = #{version,jdbcType=OTHER}
+            </if>
+        </where>
+    </select>
+
+    <!--通过Id列表作为筛选条件查询列表，列表长度不为0-->
+    <select id="listByIds" resultMap="JobResultMap" parameterType="list">
+        select
+        <include refid="table_field"/>
+        from tb_job
+        where id in
+        <foreach item="item" collection="list" separator="," open="(" close=")" index="index">
+            #{item}
+        </foreach>
+    </select>
+
+    <!--新增实体属性不为null的列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true" parameterType="com.luna.csi.entity.Job">
+        insert into tb_job
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="jobName != null">
+                job_name,
+            </if>
+            <if test="jobRemark != null">
+                job_remark,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="modifiedTime != null">
+                modified_time,
+            </if>
+            <if test="version != null">
+                version,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="jobName != null">
+                #{jobName,jdbcType=VARCHAR},
+            </if>
+            <if test="jobRemark != null">
+                #{jobRemark,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifiedTime != null">
+                #{modifiedTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="version != null">
+                #{version,jdbcType=OTHER},
+            </if>
+        </trim>
+    </insert>
+
+    <!--批量新增所有列，列表长度不能为0，且列表id统一为null或者统一不为null-->
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true" parameterType="list">
+        insert into tb_job
+        (id, job_name, job_remark, create_time, modified_time, version)
+        values
+        <foreach item="item" collection="list" separator="," open="" close="" index="index">
+            (#{item.id,jdbcType=INTEGER}, #{item.jobName,jdbcType=VARCHAR}, #{item.jobRemark,jdbcType=VARCHAR},
+            #{item.createTime,jdbcType=TIMESTAMP}, #{item.modifiedTime,jdbcType=TIMESTAMP},
+            #{item.version,jdbcType=OTHER})
+        </foreach>
+    </insert>
+
+    <!--通过主键修改实体属性不为null的列-->
+    <update id="update" parameterType="com.luna.csi.entity.Job">
+        update tb_job
+        <set>
+            <if test="jobName != null and jobName != ''">
+                job_name = #{jobName,jdbcType=VARCHAR},
+            </if>
+            <if test="jobRemark != null and jobRemark != ''">
+                job_remark = #{jobRemark,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifiedTime != null">
+                modified_time = #{modifiedTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="version != null">
+                version = #{version,jdbcType=OTHER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <!--通过表字段修改实体属性不为null的列-->
+    <update id="updateByField">
+        update tb_job
+        <set>
+            <if test="where.jobName == null and set.jobName != null and set.jobName != ''">
+                job_name = #{set.jobName,jdbcType=VARCHAR},
+            </if>
+            <if test="where.jobRemark == null and set.jobRemark != null and set.jobRemark != ''">
+                job_remark = #{set.jobRemark,jdbcType=VARCHAR},
+            </if>
+            <if test="where.createTime == null and set.createTime != null">
+                create_time = #{set.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="where.modifiedTime == null and set.modifiedTime != null">
+                modified_time = #{set.modifiedTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="where.version == null and set.version != null">
+                version = #{set.version,jdbcType=OTHER},
+            </if>
+        </set>
+        <where>
+            <if test="where.id != null">
+                and id = #{where.id,jdbcType=INTEGER}
+            </if>
+            <if test="where.jobName != null">
+                and job_name = #{where.jobName,jdbcType=VARCHAR}
+            </if>
+            <if test="where.jobRemark != null">
+                and job_remark = #{where.jobRemark,jdbcType=VARCHAR}
+            </if>
+            <if test="where.createTime != null">
+                and create_time = #{where.createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="where.modifiedTime != null">
+                and modified_time = #{where.modifiedTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="where.version != null">
+                and version = #{where.version,jdbcType=OTHER}
+            </if>
+        </where>
+    </update>
+
+    <!--通过主键修改实体列表，列表长度不能为0，注意：当实体属性为null时，对应的列也会别更新为null-->
+    <update id="updateBatch" parameterType="list">
+        update tb_job
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="job_name = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.jobName}
+                </foreach>
+            </trim>
+            <trim prefix="job_remark = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.jobRemark}
+                </foreach>
+            </trim>
+            <trim prefix="create_time = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.createTime}
+                </foreach>
+            </trim>
+            <trim prefix="modified_time = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.modifiedTime}
+                </foreach>
+            </trim>
+            <trim prefix="version = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.version}
+                </foreach>
+            </trim>
+        </trim>
+        where id in
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            #{item.id,jdbcType=INTEGER}
+        </foreach>
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById" parameterType="java.lang.Long">
+        delete
+        from tb_job
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+
+    <!--通过实体非空属性删除-->
+    <delete id="deleteByEntity" parameterType="com.luna.csi.entity.Job">
+        delete from tb_job
+        <where>
+            <if test="jobName != null">
+                and job_name = #{jobName,jdbcType=VARCHAR}
+            </if>
+            <if test="jobRemark != null">
+                and job_remark = #{jobRemark,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="modifiedTime != null">
+                and modified_time = #{modifiedTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="version != null">
+                and version = #{version,jdbcType=OTHER}
+            </if>
+        </where>
+    </delete>
+
+    <!--通过主键列表删除，列表长度不能为0-->
+    <delete id="deleteByIds" parameterType="list">
+        delete from tb_job where id in
+        <foreach item="item" collection="list" separator="," open="(" close=")" index="index">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="countAll" resultType="int">
+        select count(id)
+        from tb_job
+    </select>
+
+    <select id="countByEntity" parameterType="com.luna.csi.entity.Job" resultType="int">
+        select count(id) from tb_job
+        <where>
+            <if test="id != null">
+                and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="jobName != null">
+                and job_name = #{jobName,jdbcType=VARCHAR}
+            </if>
+            <if test="jobRemark != null">
+                and job_remark = #{jobRemark,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="modifiedTime != null">
+                and modified_time = #{modifiedTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="version != null">
+                and version = #{version,jdbcType=OTHER}
+            </if>
+        </where>
+    </select>
+</mapper>
