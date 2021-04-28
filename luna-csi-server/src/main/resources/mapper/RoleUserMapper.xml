@@ -40,7 +40,15 @@
             <if test="userId != null">
                 and user_id = #{userId,jdbcType=INTEGER}
             </if>
-            and version = #{version,jdbcType=OTHER}
+            <if test="createTime != null">
+                and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="modifiedTime != null">
+                and modified_time = #{modifiedTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="version != null">
+                and version = #{version,jdbcType=OTHER}
+            </if>
         </where>
     </select>
 
@@ -87,15 +95,9 @@
             <if test="userId != null">
                 user_id,
             </if>
-            <if test="createTime != null">
-                create_time,
-            </if>
-            <if test="modifiedTime != null">
-                modified_time,
-            </if>
-            <if test="version != null">
-                version,
-            </if>
+            create_time,
+            modified_time,
+            version,
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -107,15 +109,9 @@
             <if test="userId != null">
                 #{userId,jdbcType=INTEGER},
             </if>
-            <if test="createTime != null">
-                #{createTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="modifiedTime != null">
-                #{modifiedTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="version != null">
-                #{version,jdbcType=OTHER},
-            </if>
+            now(),
+            now(),
+            0,
         </trim>
     </insert>
 

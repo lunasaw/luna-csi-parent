@@ -58,9 +58,6 @@ public class RoleUserServiceImpl implements RoleUserService {
 
     @Override
     public int insert(RoleUser roleUser) {
-        Date date = new Date();
-        roleUser.setCreateTime(date);
-        roleUser.setModifiedTime(date);
         return roleUserMapper.insert(roleUser);
     }
 
