@@ -40,7 +40,7 @@
             <if test="id != null">
                 and id = #{id,jdbcType=INTEGER}
             </if>
-            <if test="username != null">
+            <if test="username != null and username!=''">
                 and username = #{username,jdbcType=VARCHAR}
             </if>
             <if test="password != null">
@@ -381,7 +381,7 @@
     <delete id="deleteByEntity" parameterType="com.luna.csi.entity.User">
         delete from tb_user
         <where>
-            <if test="username != null">
+            <if test="username != null  and username != '' ">
                 and username = #{username,jdbcType=VARCHAR}
             </if>
             <if test="password != null">
@@ -428,7 +428,7 @@
             <if test="id != null">
                 and id = #{id,jdbcType=INTEGER}
             </if>
-            <if test="username != null">
+            <if test="username != null and username != '' ">
                 and username = #{username,jdbcType=VARCHAR}
             </if>
             <if test="password != null">

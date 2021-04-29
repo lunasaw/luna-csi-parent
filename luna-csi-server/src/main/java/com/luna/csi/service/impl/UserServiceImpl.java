@@ -1,5 +1,8 @@
 package com.luna.csi.service.impl;
 
+import com.luna.common.dto.constant.ResultCode;
+import com.luna.common.encrypt.Md5Utils;
+import com.luna.csi.exception.UserException;
 import com.luna.csi.mapper.UserMapper;
 import com.luna.csi.service.UserService;
 import com.luna.csi.entity.User;
@@ -68,7 +71,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int update(User user) {
-        return userMapper.update(user);
+        User byEntity = userMapper.getById(user.getId());
+        if (byEntity == null) {
+            throw new UserException(ResultCode.PARAMETER_INVALID, "用户不存在");
+        }
+        byEntity.setUsername(user.getUsername());
+        byEntity.setPassword(Md5Utils.md5(Md5Utils.md5(user.getPassword())));
+        byEntity.setGender(user.getGender());
+        byEntity.setCellphone(user.getCellphone());
+        byEntity.setEmail(user.getEmail());
+        byEntity.setStatus(user.getStatus());
+        byEntity.setFaceurl(user.getFaceurl());
+        byEntity.setFacedata(user.getFacedata());
+        return userMapper.update(byEntity);
     }
 
     @Override

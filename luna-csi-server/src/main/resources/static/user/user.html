@@ -20,40 +20,7 @@
 	<link href="../css/pager.css" type="text/css" rel="stylesheet"/>
 
 	<script type="text/javascript">
-		$(function () {
-			/** 获取上一次选中的部门数据 */
-			var boxs = $("input[type='checkbox'][id^='box_']");
 
-			/** 给数据行绑定鼠标覆盖以及鼠标移开事件  */
-			$("tr[id^='data_']").hover(function () {
-				$(this).css("backgroundColor", "#eeccff");
-			}, function () {
-				$(this).css("backgroundColor", "#ffffff");
-			})
-
-			console.log(boxs)
-			/** 删除员工绑定点击事件 */
-			$("#delete").click(function () {
-				/** 获取到用户选中的复选框  */
-				var checkedBoxs = boxs.filter(":checked");
-				if (checkedBoxs.length < 1) {
-					$.ligerDialog.error("请选择一个需要删除的用户！");
-				} else {
-					/** 得到用户选中的所有的需要删除的ids */
-					var ids = checkedBoxs.map(function () {
-						return this.value;
-					})
-
-					$.ligerDialog.confirm("确认要删除吗?", "删除用户", function (r) {
-						if (r) {
-							alert("删除："+ids.get());
-							// 发送请求
-							// window.location = "${ctx }/user/removeUser?ids=" + ids.get();
-						}
-					});
-				}
-			})
-		})
 	</script>
 </head>
 <body>
@@ -80,13 +47,13 @@
 							<table width="100%" border="0" cellpadding="0" cellspacing="0">
 								<tr>
 									<td class="font3">
-										用户名：<input type="text" name="username">
-										用户状态：<select name="status">
+										用户名：<input type="text" id="search_username" name="username">
+										用户状态：<select name="status" id="user_status">
 										<option value="">全部</option>
-										<option value="1">管理员</option>
-										<option value="2">普通用户</option>
+										<option value="0">开启</option>
+										<option value="1">关闭</option>
 									</select>
-										<input type="submit" value="搜索"/>
+										<input type="button" onclick="search()" value="搜索"/>
 										<input id="delete" type="button" value="删除"/>
 									</td>
 								</tr>
@@ -128,15 +95,17 @@
 					<tbody>
 						<tr>
 							<td style="COLOR: #0061de; MARGIN-RIGHT: 3px; PADDING-TOP: 2px; TEXT-DECORATION: none">
-								<button disabled="disabled" class="disabled" id="page_pre_btn" onclick="prePage()">上一页</button>
+								<button disabled="disabled" class="disabled" id="page_pre_btn" onclick="prePage()">上一页
+								</button>
 								<span class="current" id="page_num">1</span>
 								<button id="page_next_btn" onclick="nextPage()">下一页</button>&nbsp;跳转到&nbsp;&nbsp;
-								<input id="page_jump_num" style="text-align: center;BORDER-RIGHT: #aaaadd 1px solid; PADDING-RIGHT: 5px; BORDER-TOP: #aaaadd 1px solid; PADDING-LEFT: 5px; PADDING-BOTTOM: 2px; MARGIN: 2px; BORDER-LEFT: #aaaadd 1px solid; COLOR: #000099; PADDING-TOP: 2px; BORDER-BOTTOM: #aaaadd 1px solid; TEXT-DECORATION: none"
-									type="text" size="2" id="pager_jump_page_size" />&nbsp;
-									<input type="button" onclick="page_jump()"
-									       style="text-align: center;BORDER-RIGHT: #dedfde 1px solid; PADDING-RIGHT: 6px; BACKGROUND-POSITION: 50% bottom; BORDER-TOP: #dedfde 1px solid; PADDING-LEFT: 6px; PADDING-BOTTOM: 2px; BORDER-LEFT: #dedfde 1px solid; COLOR: #0061de; MARGIN-RIGHT: 3px; PADDING-TOP: 2px; BORDER-BOTTOM: #dedfde 1px solid; TEXT-DECORATION: none"
-									       value="确定"
-									       id="pager_jump_btn"/>
+								<input id="page_jump_num"
+								       style="text-align: center;BORDER-RIGHT: #aaaadd 1px solid; PADDING-RIGHT: 5px; BORDER-TOP: #aaaadd 1px solid; PADDING-LEFT: 5px; PADDING-BOTTOM: 2px; MARGIN: 2px; BORDER-LEFT: #aaaadd 1px solid; COLOR: #000099; PADDING-TOP: 2px; BORDER-BOTTOM: #aaaadd 1px solid; TEXT-DECORATION: none"
+								       type="text" size="2" id="pager_jump_page_size"/>&nbsp;
+								<input type="button" onclick="page_jump()"
+								       style="text-align: center;BORDER-RIGHT: #dedfde 1px solid; PADDING-RIGHT: 6px; BACKGROUND-POSITION: 50% bottom; BORDER-TOP: #dedfde 1px solid; PADDING-LEFT: 6px; PADDING-BOTTOM: 2px; BORDER-LEFT: #dedfde 1px solid; COLOR: #0061de; MARGIN-RIGHT: 3px; PADDING-TOP: 2px; BORDER-BOTTOM: #dedfde 1px solid; TEXT-DECORATION: none"
+								       value="确定"
+								       id="pager_jump_btn"/>
 							</td>
 						</tr>
 						<tr align="center">
@@ -161,6 +130,16 @@
 		let pageStart = 1;
 		let pageSize = 10;
 
+		function search() {
+			let name = $('#search_username').attr('value');
+			let status = $('#user_status').attr('value');
+			let userInfo = {
+				"username": name.trim(),
+				"status": status
+			};
+			pageInfo(userInfo, pageStart, pageSize)
+		}
+
 		function checkResultAndGetData($result) {
 			if ($result.success == false) {
 				throw $result;
@@ -168,12 +147,74 @@
 			return $result.data;
 		}
 
+		$(function () {
+			/** 获取上一次选中的部门数据 */
+			var boxs = $("input[type='checkbox'][id^='box_']");
 
+			/** 给数据行绑定鼠标覆盖以及鼠标移开事件  */
+			$("tr[id^='data_']").hover(function () {
+				$(this).css("backgroundColor", "#eeccff");
+			}, function () {
+				$(this).css("backgroundColor", "#ffffff");
+			})
 
-		function pageInfo(pageStart, pageSize) {
+			/** 删除员工绑定点击事件 */
+			$("#delete").click(function () {
+				/** 获取上一次选中的部门数据 */
+				boxs = $("input[type='checkbox'][id^='box_']");
+				//console.log(boxs);
+				/** 获取到用户选中的复选框  */
+				var checkedBoxs = boxs.filter(":checked");
+				if (checkedBoxs.length < 1) {
+					$.ligerDialog.error("请选择一个需要删除的用户！");
+				} else {
+					/** 得到用户选中的所有的需要删除的ids */
+					var ids = checkedBoxs.map(function () {
+						return this.value;
+					})
+
+					/**
+					 JSON.stringify 把一个对象转换成json字符串， JSON.stringify(array)
+					 JSON.parse 把一个json字符串解析成对象。 JSON.parse(array)
+					 */
+					$.ligerDialog.confirm("确认要删除吗?", "删除用户", function (r) {
+						if (r) {
+							// 发送请求
+							$.ajax({
+								url: "api/delete", // url where to submit the request
+								type: "DELETE", // type of action POST || GET
+								contentType: 'application/json;charset=UTF-8',
+								dataType: "json",
+								data: JSON.stringify(ids.get()),
+								success: function (result) {
+									console.log(result);
+									let data;
+									try {
+										data = checkResultAndGetData(result);
+									} catch (error) {
+										console.log(error)
+										alert(JSON.stringify(error));
+										return;
+									}
+									console.log(data);
+									if (data == null) {
+										return;
+									}
+									pageInfo(null, pageStart, pageSize);
+								}
+							});
+							// window.location = "${ctx }/user/removeUser?ids=" + ids.get();
+						}
+					});
+				}
+			});
+		});
+
+		function pageInfo(userInfo, pageStart, pageSize) {
 			$.ajax({
-				url: "api/pageList/" + pageStart + "/" + pageSize, // url where to submit the request
+				url: "api/pageListByEntity/" + pageStart + "/" + pageSize, // url where to submit the request
 				type: "GET", // type of action POST || GET
+				data: userInfo,
 				success: function (result) {
 					// console.log(result);
 					let data;
@@ -181,7 +222,8 @@
 						data = checkResultAndGetData(result);
 					} catch (error) {
 						console.log(error)
-						alert(JSON.stringify(error));
+						// alert(JSON.stringify(error));
+						$.ligerDialog.error(JSON.stringify(error), "出错了，请于管理员联系");
 						return;
 					}
 
@@ -211,9 +253,7 @@
 					}
 
 
-
 					// 渲染页面
-
 					let list = data.list;
 					if (list.length > 0) {
 						let content = '';
@@ -228,12 +268,13 @@
 								'<td>' + (list[i].status == 0 ? '开启' : '关闭') + '</td>' +
 								'<td>' + (list[i].gender == 1 ? '男' : '女') + '</td>' +
 								'<td>' + list[i].createTime + '</td>' +
-								'<td align="center" width="40px;"><a href="showUpdateUser.html"><img title="修改" src="../images/update.gif"></a>' +
+								'<td align="center" width="40px;"><a href="showUpdateUser.html?userId=' + list[i].id + '"><img title="修改" src="../images/update.gif"></a>' +
 								'</td>' +
 								'</tr>'
 						}
 						$('#user_data').append(content);
-
+					} else {
+						$('#user_data').empty();
 					}
 				}
 			});
@@ -241,18 +282,18 @@
 
 		function nextPage() {
 			pageStart = pageStart + 1;
-			pageInfo(pageStart, pageSize);
+			pageInfo(null, pageStart, pageSize);
 		}
 
 		function prePage() {
 			pageStart = pageStart - 1;
-			pageInfo(pageStart, pageSize);
+			pageInfo(null, pageStart, pageSize);
 		}
 
-		function page_jump(){
+		function page_jump() {
 			let num = $('#page_jump_num').attr('value')
 			pageStart = num;
-			pageInfo(pageStart, pageSize);
+			pageInfo(null, pageStart, pageSize);
 		}
 
 		$(document).ready(function () {
@@ -279,7 +320,7 @@
 			// });
 
 			// 初始展示列表
-			pageInfo(pageStart, pageSize);
+			pageInfo(null, pageStart, pageSize);
 		});
 	</script>
 </body>
