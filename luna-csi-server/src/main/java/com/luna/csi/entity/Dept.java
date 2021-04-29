@@ -71,5 +71,4 @@ public class Dept implements Serializable {
     public void setVersion(Object version) {
         this.version = version;
     }
-
 }

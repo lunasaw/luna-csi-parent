@@ -1,0 +1,79 @@
+<head th:fragment=header(title)>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="keywords" content="">
+	<meta name="description" content="">
+	<title th:text="${title}"></title>
+	<link rel="icon" href="favicon.ico">
+	<link rel="stylesheet" href="js/metronic/plugins/scrollbar/perfect-scrollbar.css" type="text/css"
+	      th:href="@{/js/metronic/plugins/scrollbar/perfect-scrollbar.css}"/>
+	<link rel="stylesheet" href="login/css/font-awesome.min.css" th:href="@{/login/css/font-awesome.min.css}"/>
+	<link rel="stylesheet" href="js/metronic/plugins/simple-line-icons/css/simple-line-icons.css"
+	      th:href="@{/js/metronic/plugins/simple-line-icons/css/simple-line-icons.css}"/>
+	<link rel="stylesheet" href="js/metronic/plugins/animate.css/animate.min.css"
+	      th:href="@{/js/metronic/plugins/animate.css/animate.min.css}"/>
+	<link rel="stylesheet" href="js/metronic/plugins/toastr/toastr.min.css"
+	      th:href="@{/js/metronic/plugins/toastr/toastr.min.css}"/>
+	<link rel="stylesheet" href="js/metronic/plugins/bootstrap/css/bootstrap.css"
+	      th:href="@{/js/metronic/plugins/bootstrap/css/bootstrap.css}"/>
+	<link rel="stylesheet" href="js/metronic/plugins/app.css" th:href="@{/js/metronic/plugins/app.css}"/>
+	<link rel="stylesheet" href="js/metronic/plugins/theme.css" data-type="theme"
+	      th:href="@{/js/metronic/plugins/theme.css}"/>
+	<link rel="stylesheet" href="js/metronic/plugins/cover.css" th:href="@{/js/metronic/plugins/cover.css}"/>
+	<link rel="stylesheet" href="js/metronic/plugins/step.css" th:href="@{/js/metronic/plugins/step.css}"/>
+	<link rel="stylesheet" href="js/metronic/plugins/tabs/tabs.css" th:href="@{/js/metronic/plugins/tabs/tabs.css}"/>
+</head>
+
+
+<!-- 通用JS -->
+<div th:fragment="footer">
+	<script src="js/metronic/plugins/sidebar/sidebar.js" th:src="@{/js/metronic/plugins/sidebar/sidebar.js}"></script>
+	<script src="js/metronic/plugins/jquery/dist/jquery.js"
+	        th:src="@{/js/metronic/plugins/jquery/dist/jquery.js}"></script>
+	<script src="js/metronic/plugins/jquery.form/jquery.form.min.js" th:src="@{/}"></script>
+	<script src="js/metronic/plugins/jquery/plugins/scrollbar/perfect-scrollbar.jquery.min.js"
+	        th:src="@{/js/metronic/plugins/jquery.form/jquery.form.min.js}"></script>
+	<script src="js/metronic/plugins/layui/layui.js" th:src="@{/js/metronic/plugins/layui/layui.js}"></script>
+	<script src="js/metronic/plugins/layui/layui-config.js"
+	        th:src="@{/js/metronic/plugins/layui/layui-config.js}"></script>
+	<script src="js/metronic/plugins/bootstrap/dist/js/bootstrap.js"
+	        th:src="@{/js/metronic/plugins/bootstrap/dist/js/bootstrap.js}"></script>
+	<script src="js/metronic/plugins/modernizr/modernizr.custom.js"
+	        th:src="@{/js/metronic/plugins/modernizr/modernizr.custom.js}"></script>
+	<script src="js/metronic/plugins/jQuery-Storage-API/jquery.storageapi.js"
+	        th:src="@{/js/metronic/plugins/jQuery-Storage-API/jquery.storageapi.js}"></script>
+	<script src="js/metronic/plugins/parsleyjs/dist/parsley.min.js"
+	        th:src="@{/js/metronic/plugins/parsleyjs/dist/parsley.min.js}"></script>
+	<script src="js/metronic/plugins/toastr/toastr.min.js"
+	        th:src="@{/js/metronic/plugins/toastr/toastr.min.js}"></script>
+
+	<script src="js/metronic/plugins/common/util.js" th:src="@{/js/metronic/plugins/common/util.js}"></script>
+	<script src="js/metronic/plugins/app/app.js" th:src="@{/js/metronic/plugins/app/app.js}"></script>
+	<script src="js/metronic/plugins/app/menu.js" th:src="@{/js/metronic/plugins/app/menu.js}"></script>
+	<script src="js/metronic/plugins/common/autoheight.js"
+	        th:src="@{/js/metronic/plugins/common/autoheight.js}"></script>
+	<script type="text/javascript" src="js/fkjava_timer.js" th:src="@{/js/fkjava_timer.js}"></script>
+
+	<script>
+		//serialize form data
+		function serializeFormData($form) {
+			let unindexed_array = $form.serializeArray();
+			let indexed_array = {};
+
+			$.map(unindexed_array, function (n, i) {
+				indexed_array[n['name']] = n['value'];
+			});
+
+			return JSON.stringify(indexed_array);
+		}
+
+		function checkResultAndGetData($result) {
+			if ($result.success == false) {
+				throw $result;
+			}
+			return $result.data;
+		}
+	</script>
+</div>
+
