@@ -196,7 +196,7 @@
             </trim>
             <trim prefix="version = case" suffix="end,">
                 <foreach collection="list" item="item" index="index">
-                    when id = #{item.id} and version = #{item.version} then  #{item.version} + 1
+                    when id = #{item.id} and version = #{item.version} then #{item.version} + 1
                 </foreach>
             </trim>
         </trim>
@@ -223,7 +223,7 @@
             <if test="deptRemark != null">
                 and dept_remark = #{deptRemark,jdbcType=VARCHAR}
             </if>
-            and id = #{id,jdbcType=INTEGER}
+            and id = #{id,jdbcType=INTEGER} and version = #{version,jdbcType=OTHER}
         </where>
     </delete>
 

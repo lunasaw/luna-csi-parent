@@ -1,5 +1,7 @@
 package com.luna.csi.service.impl;
 
+import com.luna.common.dto.constant.ResultCode;
+import com.luna.csi.exception.UserException;
 import com.luna.csi.mapper.DeptMapper;
 import com.luna.csi.service.DeptService;
 import com.luna.csi.entity.Dept;
@@ -71,8 +73,14 @@ public class DeptServiceImpl implements DeptService {
 
     @Override
     public int update(Dept dept) {
-        dept.setModifiedTime(new Date());
-        return deptMapper.update(dept);
+        Dept byId = deptMapper.getById(dept.getId());
+        if (byId == null) {
+            throw new UserException(ResultCode.PARAMETER_INVALID, "部门不存在");
+        }
+
+        byId.setDeptName(dept.getDeptName());
+        byId.setDeptRemark(dept.getDeptRemark());
+        return deptMapper.update(byId);
     }
 
     @Override

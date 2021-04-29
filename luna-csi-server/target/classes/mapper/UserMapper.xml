@@ -40,7 +40,7 @@
             <if test="id != null">
                 and id = #{id,jdbcType=INTEGER}
             </if>
-            <if test="username != null">
+            <if test="username != null and username!=''">
                 and username = #{username,jdbcType=VARCHAR}
             </if>
             <if test="password != null">
@@ -64,7 +64,15 @@
             <if test="facedata != null">
                 and facedata = #{facedata,jdbcType=VARCHAR}
             </if>
-            and version = #{version,jdbcType=OTHER}
+            <if test="createTime != null">
+                and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="modifiedTime != null">
+                and modified_time = #{modifiedTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="version != null">
+                and version = #{version,jdbcType=OTHER}
+            </if>
         </where>
     </select>
 
@@ -101,7 +109,15 @@
             <if test="facedata != null">
                 and facedata = #{facedata,jdbcType=VARCHAR}
             </if>
-            and version = #{version,jdbcType=OTHER}
+            <if test="createTime != null">
+                and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="modifiedTime != null">
+                and modified_time = #{modifiedTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="version != null">
+                and version = #{version,jdbcType=OTHER}
+            </if>
         </where>
     </select>
 
@@ -344,7 +360,7 @@
             </trim>
             <trim prefix="version = case" suffix="end,">
                 <foreach collection="list" item="item" index="index">
-                    when id = #{item.id} and version = #{item.version} then  #{item.version} + 1
+                    when id = #{item.id} and version = #{item.version} then #{item.version} + 1
                 </foreach>
             </trim>
         </trim>
@@ -365,7 +381,7 @@
     <delete id="deleteByEntity" parameterType="com.luna.csi.entity.User">
         delete from tb_user
         <where>
-            <if test="username != null">
+            <if test="username != null  and username != '' ">
                 and username = #{username,jdbcType=VARCHAR}
             </if>
             <if test="password != null">
@@ -389,7 +405,7 @@
             <if test="facedata != null">
                 and facedata = #{facedata,jdbcType=VARCHAR}
             </if>
-            and id = #{id,jdbcType=INTEGER}
+            and id = #{id,jdbcType=INTEGER} and version = #{version,jdbcType=OTHER}
         </where>
     </delete>
 
@@ -412,7 +428,7 @@
             <if test="id != null">
                 and id = #{id,jdbcType=INTEGER}
             </if>
-            <if test="username != null">
+            <if test="username != null and username != '' ">
                 and username = #{username,jdbcType=VARCHAR}
             </if>
             <if test="password != null">

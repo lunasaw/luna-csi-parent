@@ -12,10 +12,10 @@
         </encoder>
     </appender>
 
-    <appender name="wednesdayLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_HOME}/wednesday.log</file>
+    <appender name="csiLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/csi.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_HOME}/wednesday.log.%d{yyyy-MM-dd}</fileNamePattern>
+            <fileNamePattern>${LOG_HOME}/csi.log.%d{yyyy-MM-dd}</fileNamePattern>
             <maxHistory>7</maxHistory>
         </rollingPolicy>
         <encoder>
@@ -25,7 +25,7 @@
     </appender>
 
     <logger name="com.luna.csi" additivity="false" level="INFO">
-        <appender-ref ref="wednesdayLog"/>
+        <appender-ref ref="csiLog"/>
     </logger>
 
     <!-- 控制台输出日志 -->
