@@ -61,6 +61,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int insert(User user) {
+        user.setPassword(Md5Utils.md5(Md5Utils.md5(user.getPassword())));
         return userMapper.insert(user);
     }
 

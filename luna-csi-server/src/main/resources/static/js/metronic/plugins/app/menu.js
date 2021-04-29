@@ -10,7 +10,6 @@ var menuUserName = "";
  */
 function loadMenu() {
 
-
     var json = '[{"id": "1","name": "CSI员工之家","icon": null,"url": "","parentId": "",'
         + '"childs": [{"id": "11","name": "用户管理","icon": "/xingxing.png","url": "user/user.html","parentId": "1",'
         + '"childs": [{"id": "111","name": "用户查询","icon": "","url": "user/user.html","parentId": "11",'

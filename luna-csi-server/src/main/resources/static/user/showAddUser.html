@@ -18,45 +18,9 @@
 	<script src="../js/ligerUI/js/plugins/ligerDialog.js" type="text/javascript"></script>
 	<script src="../js/ligerUI/js/plugins/ligerResizable.js" type="text/javascript"></script>
 	<link href="../css/pager.css" type="text/css" rel="stylesheet"/>
-	<script type="text/javascript">
 
-
-		/** 员工表单提交 */
-		function submit() {
-			var username = $("#username");
-			var status = $("#status");
-			var loginname = $("#loginname");
-			var password = $("#password");
-			var msg = "";
-			if ($.trim(username.val()) == "") {
-				msg = "姓名不能为空！";
-				username.focus();
-			} else if ($.trim(loginname.val()) == "") {
-				msg = "登录名不能为空！";
-				loginname.focus();
-			} else if ($.trim(loginname.val()).length < 6 || $.trim(loginname.val()).length > 20) {
-				msg = "登录名需要大于6位小于20位！";
-				loginname.focus();
-			} else if ($.trim(password.val()) == "") {
-				msg = "密码不能为空！";
-				password.focus();
-			}
-			if (msg != "") {
-				$.ligerDialog.error(msg);
-				return false;
-			} else {
-				return true;
-			}
-			//$("#userForm").submit();
-		}
-
-
-	</script>
 </head>
 <body class="layout-fixed">
-	<script language="JavaScript">
-		var context = "/hrm", __contextPath = "/hrm", __extendOptions = "main/options";
-	</script>
 	<table width="100%" border="0" cellpadding="0" cellspacing="0">
 		<tr>
 			<td height="10"></td>
@@ -78,27 +42,42 @@
 						<td class="font3 fftd">
 							<table>
 								<tr>
-									<td class="font3 fftd">姓&nbsp;名：<input type="text" name="username" id="username"
-									                                       size="20"/></td>
-
-
-									<td class="font3 fftd">状&nbsp;态：
-
+									<td class="font3 fftd">状&nbsp;&nbsp;&nbsp;&nbsp;态：
 										<select name="status" id="status">
-											<option value="1">管理员</option>
-											<option value="2">普通用户</option>
-
+											<option value="1">开启</option>
+											<option value="2">关闭</option>
 										</select>
 									</td>
 								</tr>
-
 								<tr>
-									<td class="font3 fftd">登录名：<input name="loginname" id="loginname" size="20"/></td>
-									<td class="font3 fftd">密&nbsp;码：<input name="password" id="password" size="20"/>
+									<td class="font3 fftd">用户名：
+										<input type="text" name="username" id="username" size="20" value=""/>
 									</td>
-
 								</tr>
-
+								<tr>
+									<td class="font3 fftd">密&nbsp;&nbsp;&nbsp;&nbsp;码：
+										<input type="password" name="password" id="password" size="20" value=""/>
+									</td>
+								</tr>
+								<tr>
+									<td class="font3 fftd">邮&nbsp;&nbsp;&nbsp;&nbsp;箱：
+										<input type="text" name="email" id="email" size="20" value=""/>
+									</td>
+								</tr>
+								<tr>
+									<td class="font3 fftd">电&nbsp;&nbsp;&nbsp;&nbsp;话：
+										<input type="number" name="cellphone" id="cellphone" size="11" value=""/>
+									</td>
+								</tr>
+								<tr>
+									<td class="font3 fftd">性&nbsp;&nbsp;&nbsp;&nbsp;别：
+										<span>男</span>&nbsp;&nbsp;<input type="radio" name="gender" id="gender1"
+										                                 value="1"/>
+										&nbsp;&nbsp;
+										<span>女</span>&nbsp;&nbsp;<input type="radio" name="gender" id="gender2"
+										                                 value="2"/>
+									</td>
+								</tr>
 							</table>
 						</td>
 					</tr>
@@ -109,20 +88,86 @@
 					<tr>
 						<td align="left" class="fftd">
 							<input type="button" onclick="submit()" value="添加">&nbsp;&nbsp;
-							<input type="reset" value="取消 ">&nbsp;&nbsp;
-
-
+							<input type="reset" value="取消" onclick="reset()">&nbsp;&nbsp;
 						</td>
-
-
 					</tr>
 				</table>
-
 			</td>
 		</tr>
 	</table>
 	<div style="height:10px;"></div>
 
+	<script type="text/javascript">
+		function checkResultAndGetData($result) {
+			if ($result.success == false) {
+				throw $result;
+			}
+			return $result.data;
+		}
 
+		function reset() {
+			window.location.replace('/csi/user/user.html');
+		}
+
+		function submit() {
+			/** 员工表单提交 */
+			let username = $("#username").val();
+			let status = $("#status").val();
+			let email = $("#email").val();
+			let cellphone = $("#cellphone").val();
+			let gender = $("#gender").val();
+			let password = $("#password").val();
+			let userInfo = {
+				"username": username,
+				"password": password,
+				"status": status,
+				"email": email,
+				"cellphone": cellphone,
+				"gender": gender
+			};
+			let msg = "";
+			if ($.trim(username) == "") {
+				msg = "登录名不能为空！";
+			} else if ($.trim(username).length < 6 || $.trim(username).length > 20) {
+				msg = "登录名需要大于6位小于20位！";
+			} else if ($.trim(password).length < 6 || $.trim(password).length > 20) {
+				msg = "密码需要大于6位小于20位！";
+			}
+			if (msg != "") {
+				$.ligerDialog.error(msg);
+				return false;
+			}
+			console.log(JSON.stringify(userInfo));
+
+			$.ajax({
+				type: "POST",
+				url: "api/insert",
+				async: true,
+				contentType: 'application/json;charset=UTF-8',
+				data: JSON.stringify(userInfo),
+				dataType: "json",
+				error: function (XMLHttpRequest, textStatus, text) {
+					$.ligerDialog.error(JSON.stringify(text), "出错了，请于管理员联系");
+				},
+				success: function (result) {
+					console.log(result);
+					let data;
+					try {
+						data = checkResultAndGetData(result);
+					} catch (error) {
+						console.log(error)
+						// alert(JSON.stringify(error));
+						$.ligerDialog.error(JSON.stringify(error), "出错了，请于管理员联系");
+						return;
+					}
+					if (data) {
+						$.ligerDialog.success(result.message, "修改成功", null, null);
+					} else {
+						$.ligerDialog.warn(data, "修改失败");
+					}
+				}
+			});
+		}
+	</script>
 </body>
 </html>

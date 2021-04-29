@@ -166,46 +166,7 @@
 					}
 				}
 			});
-
-
-			//$("#userForm").submit();
 		}
-
-		$('.form-update').submit(function (e) {
-			// 阻止默认提交
-			e.preventDefault();
-			$.ajax({
-				type: "POST",
-				url: "/csi/user/api/login",
-				async: true,
-				contentType: 'application/json;charset=UTF-8',
-				data: serializeFormData($('.form-update')),
-				dataType: "json",
-				error: function (XMLHttpRequest, textStatus, text) {
-					$.MsgBox.Alert("消息", "出错了，请于管理员联系");
-				},
-				success: function (result) {
-					console.log(result);
-					let data;
-					try {
-						data = checkResultAndGetData(result);
-					} catch (error) {
-						alert(JSON.stringify(error));
-						return;
-					}
-
-					// console.log(data);
-					// if (data == null) {
-					// 	alert(JSON.stringify(result));
-					// 	return;
-					// }
-					window.location.replace("main");
-				}
-			});
-		});
-		/** 提交表单 */
-			//$("#loginForm").submit();
-
 
 		let userId = null;
 		$(document).ready(function () {
