@@ -31,7 +31,7 @@
 				$(this).css("backgroundColor", "#ffffff");
 			})
 
-
+			console.log(boxs)
 			/** 删除员工绑定点击事件 */
 			$("#delete").click(function () {
 				/** 获取到用户选中的复选框  */
@@ -46,7 +46,7 @@
 
 					$.ligerDialog.confirm("确认要删除吗?", "删除用户", function (r) {
 						if (r) {
-							// alert("删除："+ids.get());
+							alert("删除："+ids.get());
 							// 发送请求
 							// window.location = "${ctx }/user/removeUser?ids=" + ids.get();
 						}
@@ -54,7 +54,6 @@
 				}
 			})
 		})
-
 	</script>
 </head>
 <body>
@@ -104,47 +103,20 @@
 			<td height="20">
 				<table width="100%" border="1" cellpadding="5" cellspacing="0"
 				       style="border:#c2c6cc 1px solid; border-collapse:collapse;">
-					<tbody>
+					<thead>
 						<tr class="main_trbg_tit" align="center">
 							<td><input type="checkbox" name="checkAll" id="checkAll"></td>
-							<td>登录名</td>
-							<td>密码</td>
 							<td>用户名</td>
+							<td>电话</td>
+							<td>密码</td>
+							<td>邮箱</td>
 							<td>状态</td>
+							<td>性别</td>
 							<td>创建时间</td>
-
 							<td align="center">操作</td>
-
 						</tr>
-
-						<tr id="data_0" align="center" class="main_trbg" style="background-color: rgb(255, 255, 255);">
-							<td><input type="checkbox" id="box_0" value="1"></td>
-							<td>songyq</td>
-							<td>96e79218965eb72c92a549dd5a330112</td>
-							<td>songyq</td>
-							<td>2</td>
-							<td>2016年3月12日</td>
-
-							<td align="center" width="40px;"><a href="showUpdateUser.html">
-								<img title="修改" src="../images/update.gif"></a>
-							</td>
-
-						</tr>
-
-						<tr id="data_1" align="center" class="main_trbg" style="background-color: rgb(238, 204, 255);">
-							<td><input type="checkbox" id="box_1" value="5"></td>
-							<td>wangxh</td>
-							<td>96e79218965eb72c92a549dd5a330112</td>
-							<td>wangxh</td>
-							<td>1</td>
-							<td>2019年4月6日</td>
-
-							<td align="center" width="40px;"><a href="showUpdateUser.html">
-								<img title="修改" src="../images/update.gif"></a>
-							</td>
-
-						</tr>
-
+					</thead>
+					<tbody id="user_data">
 					</tbody>
 				</table>
 			</td>
@@ -155,21 +127,26 @@
 				<table width="100%" align="center" style="font-size:13px;" class="digg">
 					<tbody>
 						<tr>
-							<td style="COLOR: #0061de; MARGIN-RIGHT: 3px; PADDING-TOP: 2px; TEXT-DECORATION: none"><span
-								class="disabled">上一页</span><span class="current">1</span><span
-								class="disabled">下一页</span>&nbsp;跳转到&nbsp;&nbsp;<input
-								style="text-align: center;BORDER-RIGHT: #aaaadd 1px solid; PADDING-RIGHT: 5px; BORDER-TOP: #aaaadd 1px solid; PADDING-LEFT: 5px; PADDING-BOTTOM: 2px; MARGIN: 2px; BORDER-LEFT: #aaaadd 1px solid; COLOR: #000099; PADDING-TOP: 2px; BORDER-BOTTOM: #aaaadd 1px solid; TEXT-DECORATION: none"
-								type="text" size="2" id="pager_jump_page_size">&nbsp;<input type="button"
-							                                                                style="text-align: center;BORDER-RIGHT: #dedfde 1px solid; PADDING-RIGHT: 6px; BACKGROUND-POSITION: 50% bottom; BORDER-TOP: #dedfde 1px solid; PADDING-LEFT: 6px; PADDING-BOTTOM: 2px; BORDER-LEFT: #dedfde 1px solid; COLOR: #0061de; MARGIN-RIGHT: 3px; PADDING-TOP: 2px; BORDER-BOTTOM: #dedfde 1px solid; TEXT-DECORATION: none"
-							                                                                value="确定"
-							                                                                id="pager_jump_btn"></td>
+							<td style="COLOR: #0061de; MARGIN-RIGHT: 3px; PADDING-TOP: 2px; TEXT-DECORATION: none">
+								<button disabled="disabled" class="disabled" id="page_pre_btn" onclick="prePage()">上一页</button>
+								<span class="current" id="page_num">1</span>
+								<button id="page_next_btn" onclick="nextPage()">下一页</button>&nbsp;跳转到&nbsp;&nbsp;
+								<input id="page_jump_num" style="text-align: center;BORDER-RIGHT: #aaaadd 1px solid; PADDING-RIGHT: 5px; BORDER-TOP: #aaaadd 1px solid; PADDING-LEFT: 5px; PADDING-BOTTOM: 2px; MARGIN: 2px; BORDER-LEFT: #aaaadd 1px solid; COLOR: #000099; PADDING-TOP: 2px; BORDER-BOTTOM: #aaaadd 1px solid; TEXT-DECORATION: none"
+									type="text" size="2" id="pager_jump_page_size" />&nbsp;
+									<input type="button" onclick="page_jump()"
+									       style="text-align: center;BORDER-RIGHT: #dedfde 1px solid; PADDING-RIGHT: 6px; BACKGROUND-POSITION: 50% bottom; BORDER-TOP: #dedfde 1px solid; PADDING-LEFT: 6px; PADDING-BOTTOM: 2px; BORDER-LEFT: #dedfde 1px solid; COLOR: #0061de; MARGIN-RIGHT: 3px; PADDING-TOP: 2px; BORDER-BOTTOM: #dedfde 1px solid; TEXT-DECORATION: none"
+									       value="确定"
+									       id="pager_jump_btn"/>
+							</td>
 						</tr>
 						<tr align="center">
 							<td style="font-size:13px;"></td>
 						</tr>
 						<tr>
 							<td style="COLOR: #0061de; MARGIN-RIGHT: 3px; PADDING-TOP: 2px; TEXT-DECORATION: none">
-								总共<font color="red">2</font>条记录，当前显示1-2条记录。
+								总共<font color="red" id="data_count">2</font>条记录，当前显示<font color="red"
+								                                                          id="data_count_start">2</font>-<font
+								color="red" id="data_count_end">2</font>条记录。
 							</td>
 						</tr>
 					</tbody>
@@ -181,26 +158,128 @@
 
 
 	<script type="text/javascript">
-		$(document).ready(function () {
+		let pageStart = 1;
+		let pageSize = 10;
+
+		function checkResultAndGetData($result) {
+			if ($result.success == false) {
+				throw $result;
+			}
+			return $result.data;
+		}
+
+
+
+		function pageInfo(pageStart, pageSize) {
 			$.ajax({
-				url: "usr/api/list", // url where to submit the request
+				url: "api/pageList/" + pageStart + "/" + pageSize, // url where to submit the request
 				type: "GET", // type of action POST || GET
 				success: function (result) {
-					//console.log(result);
+					// console.log(result);
 					let data;
 					try {
 						data = checkResultAndGetData(result);
 					} catch (error) {
+						console.log(error)
 						alert(JSON.stringify(error));
 						return;
 					}
 
-					//console.log(data);
+					console.log(data);
 					if (data == null) {
 						return;
 					}
+
+					// 当前页面开始记录数目
+					$("#data_count_start").text(data.startRow);
+					// 当前页面结束记录数
+					$("#data_count_end").text(data.endRow);
+					// 总计
+					$("#data_count").text(data.total);
+					// 当前页数
+					$("#page_num").text(data.pageNum);
+					if (data.isFirstPage == true) {
+						$("#page_pre_btn").attr("disabled", "disabled")
+					} else {
+						$("#page_pre_btn").removeAttr("disabled");
+					}
+
+					if (data.isLastPage == true) {
+						$("#page_next_btn").attr("disabled", "disabled")
+					} else {
+						$("#page_next_btn").removeAttr("disabled");
+					}
+
+
+
+					// 渲染页面
+
+					let list = data.list;
+					if (list.length > 0) {
+						let content = '';
+						$('#user_data').empty();
+						for (let i in list) {
+							content = content + '<tr id="data_' + list[i].id + '" align="center" class="main_trbg" style="background-color: rgb(255, 255, 255);">' +
+								'<td><input type="checkbox" id="box_' + list[i].id + '" value="' + list[i].id + '"></td>' +
+								'<td>' + list[i].username + '</td>' +
+								'<td>' + list[i].cellphone + '</td>' +
+								'<td>' + list[i].password + '</td>' +
+								'<td>' + list[i].email + '</td>' +
+								'<td>' + (list[i].status == 0 ? '开启' : '关闭') + '</td>' +
+								'<td>' + (list[i].gender == 1 ? '男' : '女') + '</td>' +
+								'<td>' + list[i].createTime + '</td>' +
+								'<td align="center" width="40px;"><a href="showUpdateUser.html"><img title="修改" src="../images/update.gif"></a>' +
+								'</td>' +
+								'</tr>'
+						}
+						$('#user_data').append(content);
+
+					}
 				}
 			});
+		}
+
+		function nextPage() {
+			pageStart = pageStart + 1;
+			pageInfo(pageStart, pageSize);
+		}
+
+		function prePage() {
+			pageStart = pageStart - 1;
+			pageInfo(pageStart, pageSize);
+		}
+
+		function page_jump(){
+			let num = $('#page_jump_num').attr('value')
+			pageStart = num;
+			pageInfo(pageStart, pageSize);
+		}
+
+		$(document).ready(function () {
+			// $.ajax({
+			// 	url: "api/account", // url where to submit the request
+			// 	type: "GET", // type of action POST || GET
+			// 	success: function (result) {
+			// 		// console.log(result);
+			// 		let data;
+			// 		try {
+			// 			data = checkResultAndGetData(result);
+			// 		} catch (error) {
+			// 			console.log(error)
+			// 			alert(JSON.stringify(error));
+			// 			return;
+			// 		}
+			//
+			// 		console.log(data);
+			// 		if (data == null) {
+			// 			return;
+			// 		}
+			// 		$("#data_count").text(data);
+			// 	}
+			// });
+
+			// 初始展示列表
+			pageInfo(pageStart, pageSize);
 		});
 	</script>
 </body>

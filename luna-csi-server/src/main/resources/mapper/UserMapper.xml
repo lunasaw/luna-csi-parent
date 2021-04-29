@@ -64,7 +64,15 @@
             <if test="facedata != null">
                 and facedata = #{facedata,jdbcType=VARCHAR}
             </if>
-            and version = #{version,jdbcType=OTHER}
+            <if test="createTime != null">
+                and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="modifiedTime != null">
+                and modified_time = #{modifiedTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="version != null">
+                and version = #{version,jdbcType=OTHER}
+            </if>
         </where>
     </select>
 
