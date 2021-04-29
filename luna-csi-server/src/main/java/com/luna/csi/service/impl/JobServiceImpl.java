@@ -1,5 +1,7 @@
 package com.luna.csi.service.impl;
 
+import com.luna.common.dto.constant.ResultCode;
+import com.luna.csi.exception.UserException;
 import com.luna.csi.mapper.JobMapper;
 import com.luna.csi.service.JobService;
 import com.luna.csi.entity.Job;
@@ -58,9 +60,6 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public int insert(Job job) {
-        Date date = new Date();
-        job.setCreateTime(date);
-        job.setModifiedTime(date);
         return jobMapper.insert(job);
     }
 
@@ -71,8 +70,15 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public int update(Job job) {
-        job.setModifiedTime(new Date());
-        return jobMapper.update(job);
+        Job byId = jobMapper.getById(job.getId());
+
+        if (byId == null) {
+            throw new UserException(ResultCode.PARAMETER_INVALID, "职位不存在");
+        }
+
+        byId.setJobName(job.getJobName());
+        byId.setJobRemark(job.getJobRemark());
+        return jobMapper.update(byId);
     }
 
     @Override
