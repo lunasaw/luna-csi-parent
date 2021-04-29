@@ -18,32 +18,7 @@
 	<script src="../js/ligerUI/js/plugins/ligerDialog.js" type="text/javascript"></script>
 	<script src="../js/ligerUI/js/plugins/ligerResizable.js" type="text/javascript"></script>
 	<link href="../css/pager.css" type="text/css" rel="stylesheet"/>
-	<script type="text/javascript">
-		function submit() {
-			/** 职位表单提交 */
-				//$("#jobForm").submit(function(){
-			var name = $("#name");
-			var remark = $("#remark");
-			var msg = "";
-			if ($.trim(name.val()) == "") {
-				msg = "职位名称不能为空！";
-				name.focus();
-			} else if ($.trim(remark.val()) == "") {
-				msg = "详细描述不能为空！";
-				remark.focus();
-			}
-			if (msg != "") {
-				$.ligerDialog.error(msg);
-				return false;
-			} else {
-				return true;
-			}
-			//$("#jobForm").submit();
-			//});
-		}
 
-
-	</script>
 </head>
 <body>
 	<table width="100%" border="0" cellpadding="0" cellspacing="0">
@@ -83,7 +58,8 @@
 
 					<tr>
 						<td align="left" class="fftd"><input type="button" onclick="submit()"
-						                                     value="修改 ">&nbsp;&nbsp;<input type="reset" value="取消 ">
+						                                     value="修改 ">&nbsp;&nbsp;<input type="reset" value="取消"
+						                                                                    onclick="reset()">
 						</td>
 					</tr>
 				</table>
@@ -92,5 +68,102 @@
 		</tr>
 	</table>
 	<div style="height:10px;"></div>
+	<script type="text/javascript">
+
+		function checkResultAndGetData($result) {
+			if ($result.success == false) {
+				throw $result;
+			}
+			return $result.data;
+		}
+
+		function reset() {
+			window.location.replace('/csi/dept/dept.html');
+		}
+
+		function submit() {
+
+			/** 员工表单提交 */
+			let name = $("#name").val();
+			let remark = $("#remark").val();
+
+
+			let deptInfo = {
+				"id": jobId,
+				"jobName": name,
+				"jobRemark": remark
+			};
+			let msg = "";
+			if ($.trim(name) == "") {
+				msg = "职位名称不能为空！";
+				name.focus();
+			} else if ($.trim(remark) == "") {
+				msg = "详细描述不能为空！";
+				remark.focus();
+			}
+			if (msg != "") {
+				$.ligerDialog.error(msg);
+				return false;
+			}
+			console.log(JSON.stringify(deptInfo))
+			$.ajax({
+				type: "PUT",
+				url: "api/update",
+				async: true,
+				contentType: 'application/json;charset=UTF-8',
+				data: JSON.stringify(deptInfo),
+				dataType: "json",
+				error: function (XMLHttpRequest, textStatus, text) {
+					$.ligerDialog.error(JSON.stringify(text), "出错了，请于管理员联系");
+				},
+				success: function (result) {
+					console.log(result);
+					let data;
+					try {
+						data = checkResultAndGetData(result);
+					} catch (error) {
+						console.log(error)
+						// alert(JSON.stringify(error));
+						$.ligerDialog.error(JSON.stringify(error), "出错了，请于管理员联系");
+						return;
+					}
+					if (data) {
+						$.ligerDialog.success(result.message, "修改成功", null, null);
+					} else {
+						$.ligerDialog.warn("请重试", "修改失败");
+					}
+				}
+			});
+		}
+
+		let jobId = null;
+		$(document).ready(function () {
+			// 获取url上的site参数并且传入表单
+			let searchParams = new URLSearchParams(window.location.search);
+			jobId = searchParams.get("jobId");
+			$.ajax({
+				url: "api/get/" + jobId, // url where to submit the request
+				type: "GET", // type of action POST || GET
+				success: function (result) {
+					// console.log(result);
+					let data;
+					try {
+						data = checkResultAndGetData(result);
+					} catch (error) {
+						console.log(error)
+						alert(JSON.stringify(error));
+						return;
+					}
+
+					console.log(data);
+					if (data == null) {
+						return;
+					}
+					$("#name").attr("value", data.jobName);
+					$("#remark").attr("value", data.jobRemark);
+				}
+			});
+		});
+	</script>
 </body>
 </html>

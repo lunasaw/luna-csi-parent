@@ -262,10 +262,7 @@ function selectMenu(menuid) {
  * @param parentActiveId
  */
 function tabAdd(id, title, url, icon, closable) {
-
-
     menutab.removeAll();
-
     icon = (icon == undefined) ? "" : icon;
     closable = (closable == undefined) ? true : false;
     menutab.appendTab({id: id, title: title, url: url, icon: icon, closable: closable});
