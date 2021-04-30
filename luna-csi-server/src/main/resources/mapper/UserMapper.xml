@@ -358,6 +358,11 @@
                     when id = #{item.id} then #{item.facedata}
                 </foreach>
             </trim>
+            <trim prefix="modified_time = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then now()
+                </foreach>
+            </trim>
             <trim prefix="version = case" suffix="end,">
                 <foreach collection="list" item="item" index="index">
                     when id = #{item.id} and version = #{item.version} then #{item.version} + 1

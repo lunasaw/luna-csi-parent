@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.luna.csi.mapper.DocumentMapper">
+
+    <resultMap type="com.luna.csi.entity.Document" id="DocumentResultMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="fileTitle" column="file_title" jdbcType="VARCHAR"/>
+        <result property="fileDescription" column="file_description" jdbcType="VARCHAR"/>
+        <result property="fileUrl" column="file_url" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="modifiedTime" column="modified_time" jdbcType="TIMESTAMP"/>
+        <result property="version" column="version" jdbcType="OTHER"/>
+    </resultMap>
+
+    <sql id="table_field">
+        id
+        , file_title, file_description, file_url, create_time, modified_time, version
+    </sql>
+
+    <!--通过Id查询单个-->
+    <select id="getById" resultMap="DocumentResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="table_field"/>
+        from tb_document
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+
+    <!--通过实体不为空的属性作为筛选条件查询列表-->
+    <select id="listByEntity" resultMap="DocumentResultMap" parameterType="com.luna.csi.entity.Document">
+        select
+        <include refid="table_field"/>
+        from tb_document
+        <where>
+            <if test="id != null  ">
+                and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="fileTitle != null  and fileTitle != '' ">
+                and file_title = #{fileTitle,jdbcType=VARCHAR}
+            </if>
+            <if test="fileDescription != null  and fileDescription != '' ">
+                and file_description = #{fileDescription,jdbcType=VARCHAR}
+            </if>
+            <if test="fileUrl != null  and fileUrl != '' ">
+                and file_url = #{fileUrl,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime != null  ">
+                and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="modifiedTime != null  ">
+                and modified_time = #{modifiedTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="version != null  ">
+                and version = #{version,jdbcType=OTHER}
+            </if>
+        </where>
+    </select>
+
+    <!--通过实体不为空的属性作为筛选条件查询单个-->
+    <select id="getByEntity" resultMap="DocumentResultMap" parameterType="com.luna.csi.entity.Document">
+        select
+        <include refid="table_field"/>
+        from tb_document
+        <where>
+            <if test="id != null  ">
+                and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="fileTitle != null  and fileTitle != '' ">
+                and file_title = #{fileTitle,jdbcType=VARCHAR}
+            </if>
+            <if test="fileDescription != null  and fileDescription != '' ">
+                and file_description = #{fileDescription,jdbcType=VARCHAR}
+            </if>
+            <if test="fileUrl != null  and fileUrl != '' ">
+                and file_url = #{fileUrl,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime != null  ">
+                and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="modifiedTime != null  ">
+                and modified_time = #{modifiedTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="version != null  ">
+                and version = #{version,jdbcType=OTHER}
+            </if>
+        </where>
+    </select>
+
+    <!--通过Id列表作为筛选条件查询列表，列表长度不为0-->
+    <select id="listByIds" resultMap="DocumentResultMap" parameterType="list">
+        select
+        <include refid="table_field"/>
+        from tb_document
+        where id in
+        <foreach item="item" collection="list" separator="," open="(" close=")" index="index">
+            #{item}
+        </foreach>
+    </select>
+
+    <!--新增实体属性不为null的列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true" parameterType="com.luna.csi.entity.Document">
+        insert into tb_document
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null  ">
+                id,
+            </if>
+            <if test="fileTitle != null  and fileTitle != '' ">
+                file_title,
+            </if>
+            <if test="fileDescription != null  and fileDescription != '' ">
+                file_description,
+            </if>
+            <if test="fileUrl != null  and fileUrl != '' ">
+                file_url,
+            </if>
+            create_time,
+            modified_time,
+            version,
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null  ">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="fileTitle != null  and fileTitle != '' ">
+                #{fileTitle,jdbcType=VARCHAR},
+            </if>
+            <if test="fileDescription != null  and fileDescription != '' ">
+                #{fileDescription,jdbcType=VARCHAR},
+            </if>
+            <if test="fileUrl != null  and fileUrl != '' ">
+                #{fileUrl,jdbcType=VARCHAR},
+            </if>
+            now(),
+            now(),
+            0,
+        </trim>
+    </insert>
+
+    <!--批量新增所有列，列表长度不能为0，且列表id统一为null或者统一不为null-->
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true" parameterType="list">
+        insert into tb_document
+        (file_title, file_description, file_url, create_time, modified_time, version)
+        values
+        <foreach item="item" collection="list" separator="," open="" close="" index="index">
+            (#{item.fileTitle,jdbcType=VARCHAR}, #{item.fileDescription,jdbcType=VARCHAR},
+            #{item.fileUrl,jdbcType=VARCHAR}, now(),
+            now(),
+            0)
+        </foreach>
+    </insert>
+
+    <!--通过主键修改实体属性不为null的列-->
+    <update id="update" parameterType="com.luna.csi.entity.Document">
+        update tb_document
+        <set>
+            <if test="fileTitle != null   and fileTitle != ''">
+                file_title = #{fileTitle,jdbcType=VARCHAR},
+            </if>
+            <if test="fileDescription != null   and fileDescription != ''">
+                file_description = #{fileDescription,jdbcType=VARCHAR},
+            </if>
+            <if test="fileUrl != null   and fileUrl != ''">
+                file_url = #{fileUrl,jdbcType=VARCHAR},
+            </if>
+            modified_time = now(),
+            version = version + 1,
+        </set>
+        where id = #{id,jdbcType=INTEGER} and version = #{version,jdbcType=OTHER},
+    </update>
+
+    <!--通过表字段修改实体属性不为null的列-->
+    <update id="updateByField">
+        update tb_document
+        <set>
+            <if test="where.fileTitle == null and set.fileTitle != null and set.fileTitle != ''">
+                file_title = #{set.fileTitle,jdbcType=VARCHAR},
+            </if>
+            <if test="where.fileDescription == null and set.fileDescription != null and set.fileDescription != ''">
+                file_description = #{set.fileDescription,jdbcType=VARCHAR},
+            </if>
+            <if test="where.fileUrl == null and set.fileUrl != null and set.fileUrl != ''">
+                file_url = #{set.fileUrl,jdbcType=VARCHAR},
+            </if>
+            modified_time = now(),
+            version = version + 1,
+        </set>
+        <where>
+            <if test="where.id != null and id != ''">
+                and id = #{where.id,jdbcType=INTEGER}
+            </if>
+            <if test="where.fileTitle != null and fileTitle != ''">
+                and file_title = #{where.fileTitle,jdbcType=VARCHAR}
+            </if>
+            <if test="where.fileDescription != null and fileDescription != ''">
+                and file_description = #{where.fileDescription,jdbcType=VARCHAR}
+            </if>
+            <if test="where.fileUrl != null and fileUrl != ''">
+                and file_url = #{where.fileUrl,jdbcType=VARCHAR}
+            </if>
+            and id = #{id,jdbcType=INTEGER} and version = #{version,jdbcType=OTHER}
+        </where>
+    </update>
+
+    <!--通过主键修改实体列表，列表长度不能为0，注意：当实体属性为null时，对应的列也会别更新为null-->
+    <update id="updateBatch" parameterType="list">
+        update tb_document
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="file_title = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.fileTitle}
+                </foreach>
+            </trim>
+            <trim prefix="file_description = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.fileDescription}
+                </foreach>
+            </trim>
+            <trim prefix="file_url = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.fileUrl}
+                </foreach>
+            </trim>
+            <trim prefix="modified_time = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then now()
+                </foreach>
+            </trim>
+            <trim prefix="version = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} and version = #{item.version} then #{item.version} + 1
+                </foreach>
+            </trim>
+        </trim>
+        where id in
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            #{item.id,jdbcType=INTEGER}
+        </foreach>
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById" parameterType="java.lang.Long">
+        delete
+        from tb_document
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+
+    <!--通过实体非空属性删除-->
+    <delete id="deleteByEntity" parameterType="com.luna.csi.entity.Document">
+        delete from tb_document
+        <where>
+            <if test="fileTitle != null  and fileTitle != '' ">
+                and file_title = #{fileTitle,jdbcType=VARCHAR}
+            </if>
+            <if test="fileDescription != null  and fileDescription != '' ">
+                and file_description = #{fileDescription,jdbcType=VARCHAR}
+            </if>
+            <if test="fileUrl != null  and fileUrl != '' ">
+                and file_url = #{fileUrl,jdbcType=VARCHAR}
+            </if>
+            and id = #{id,jdbcType=INTEGER} and version = #{version,jdbcType=OTHER}
+        </where>
+    </delete>
+
+    <!--通过主键列表删除，列表长度不能为0-->
+    <delete id="deleteByIds" parameterType="list">
+        delete from tb_document where id in
+        <foreach item="item" collection="list" separator="," open="(" close=")" index="index">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="countAll" resultType="int">
+        select count(id)
+        from tb_document
+    </select>
+
+    <select id="countByEntity" parameterType="com.luna.csi.entity.Document" resultType="int">
+        select count(id) from tb_document
+        <where>
+            <if test="id != null  ">
+                and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="fileTitle != null  and fileTitle != '' ">
+                and file_title = #{fileTitle,jdbcType=VARCHAR}
+            </if>
+            <if test="fileDescription != null  and fileDescription != '' ">
+                and file_description = #{fileDescription,jdbcType=VARCHAR}
+            </if>
+            <if test="fileUrl != null  and fileUrl != '' ">
+                and file_url = #{fileUrl,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime != null  ">
+                and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="modifiedTime != null  ">
+                and modified_time = #{modifiedTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="version != null  ">
+                and version = #{version,jdbcType=OTHER}
+            </if>
+        </where>
+    </select>
+</mapper>
