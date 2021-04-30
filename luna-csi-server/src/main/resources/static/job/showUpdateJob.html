@@ -96,10 +96,10 @@
 			let msg = "";
 			if ($.trim(name) == "") {
 				msg = "职位名称不能为空！";
-				name.focus();
+				$("#name").focus();
 			} else if ($.trim(remark) == "") {
 				msg = "详细描述不能为空！";
-				remark.focus();
+				$("#remark").focus();
 			}
 			if (msg != "") {
 				$.ligerDialog.error(msg);

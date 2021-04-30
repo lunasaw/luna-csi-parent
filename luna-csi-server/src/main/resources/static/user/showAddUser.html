@@ -157,13 +157,13 @@
 					} catch (error) {
 						console.log(error)
 						// alert(JSON.stringify(error));
-						$.ligerDialog.error(JSON.stringify(error), "出错了，请于管理员联系");
+						$.ligerDialog.error("出错了，请于管理员联系");
 						return;
 					}
 					if (data) {
-						$.ligerDialog.success(result.message, "修改成功", null, null);
+						$.ligerDialog.success("添加成功");
 					} else {
-						$.ligerDialog.warn(data, "修改失败");
+						$.ligerDialog.warn("添加失败");
 					}
 				}
 			});

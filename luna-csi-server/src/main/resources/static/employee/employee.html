@@ -54,6 +54,7 @@
 									<td class="font3">
 										性别：
 										<select name="empSex" id="empSex" style="width:143px;">
+											<option value="">-请选择-</option>
 											<option value="1">男</option>
 											<option value="2">女</option>
 										</select>
@@ -82,10 +83,12 @@
 							<td>姓名</td>
 							<td>性别</td>
 							<td>电话</td>
+							<td>出生日期</td>
 							<td>手机</td>
 							<td>QQ</td>
 							<td>邮箱</td>
-							<td>职位</td>
+							<td>邮政编码</td>
+							<td>经理</td>
 							<td>学历</td>
 							<td>身份证号码</td>
 							<td>部门</td>
@@ -147,7 +150,7 @@
 		function search() {
 			let empName = $('#empName').attr('value');
 			let empSex = $('#empSex').attr('value');
-			let empPhone = $('#user_status').attr('value');
+			let empPhone = $('#empPhone').attr('value');
 			let cardId = $('#cardId').attr('value');
 			let deptId = $('#deptId').attr('value');
 			let jobId = $('#jobId').attr('value');
@@ -203,7 +206,7 @@
 						if (r) {
 							// 发送请求
 							$.ajax({
-								url: "api/delete", // url where to submit the request
+								url: "/csi/emp/api/delete", // url where to submit the request
 								type: "DELETE", // type of action POST || GET
 								contentType: 'application/json;charset=UTF-8',
 								dataType: "json",
@@ -284,16 +287,18 @@
 							content = content + '<tr id="data_' + list[i].id + '" class="main_trbg" align="center" style="background-color: rgb(255, 255, 255);"><td>' +
 								'<input type="checkbox" id="box_' + list[i].id + '" value="' + list[i].id + '"></td>' +
 								'<td>' + list[i].empName + '</td>' +
-								'<td>' + (list[i].empSex == 1 ? '男' : '女') + '</td>' +
+								'<td>' + list[i].empSex + '</td>' +
 								'<td>' + list[i].empTel + '</td>' +
+								'<td>' + list[i].empBirthday + '</td>' +
 								'<td>' + list[i].empPhone + '</td>' +
 								'<td>' + list[i].qqNum + '</td>' +
 								'<td>' + list[i].empEmail + '</td>' +
+								'<td>' + list[i].postCode + '</td>' +
 								'<td>' + list[i].empMajor + '</td>' +
 								'<td>' + list[i].empEdu + '</td>' +
 								'<td>' + list[i].cardId + '</td>' +
-								'<td>' + list[i].deptId + '</td>' +
-								'<td>' + list[i].jobId + '</td>' +
+								'<td>' + list[i].deptName + '</td>' +
+								'<td>' + list[i].jobName + '</td>' +
 								'<td>' + list[i].empAddress + '</td>' +
 								'<td>' + list[i].empRace + '</td>' +
 								'<td>' + list[i].empParty + '</td>' +
@@ -328,6 +333,7 @@
 					if (data.length > 0) {
 						let content = '';
 						$('#jobId').empty();
+						content = content + '<option value="">-请选择职位-</option>';
 						for (let i in data) {
 							content = content + '<option value="' + data[i].id + '">' + data[i].jobName + '</option>';
 						}
@@ -359,6 +365,7 @@
 					if (data.length > 0) {
 						let content = '';
 						$('#deptId').empty();
+						content = content + '<option value="">-请选择部门-</option>';
 						for (let i in data) {
 							content = content + '<option value="' + data[i].id + '">' + data[i].deptName + '</option>';
 						}

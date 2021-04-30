@@ -56,52 +56,52 @@
             <if test="jobId != null">
                 and job_id = #{jobId,jdbcType=INTEGER}
             </if>
-            <if test="empName != null">
+            <if test="empName != null and empName!=''">
                 and emp_name = #{empName,jdbcType=VARCHAR}
             </if>
-            <if test="cardId != null">
+            <if test="cardId != null and cardId!=''">
                 and card_id = #{cardId,jdbcType=VARCHAR}
             </if>
-            <if test="empAddress != null">
+            <if test="empAddress != null and empAddress!=''">
                 and emp_address = #{empAddress,jdbcType=VARCHAR}
             </if>
-            <if test="postCode != null">
+            <if test="postCode != null and postCode!=''">
                 and post_code = #{postCode,jdbcType=VARCHAR}
             </if>
-            <if test="empTel != null">
+            <if test="empTel != null and empTel!=''">
                 and emp_tel = #{empTel,jdbcType=VARCHAR}
             </if>
-            <if test="empPhone != null">
+            <if test="empPhone != null and empPhone!=''">
                 and emp_phone = #{empPhone,jdbcType=VARCHAR}
             </if>
-            <if test="qqNum != null">
+            <if test="qqNum != null and qqNum!=''">
                 and qq_num = #{qqNum,jdbcType=VARCHAR}
             </if>
-            <if test="empEmail != null">
+            <if test="empEmail != null and empEmail!=''">
                 and emp_email = #{empEmail,jdbcType=VARCHAR}
             </if>
             <if test="empSex != null">
                 and emp_sex = #{empSex,jdbcType=INTEGER}
             </if>
-            <if test="empParty != null">
+            <if test="empParty != null and empParty!=''">
                 and emp_party = #{empParty,jdbcType=VARCHAR}
             </if>
             <if test="empBirthday != null">
                 and emp_birthday = #{empBirthday,jdbcType=TIMESTAMP}
             </if>
-            <if test="empRace != null">
+            <if test="empRace != null and empRace!=''">
                 and emp_race = #{empRace,jdbcType=VARCHAR}
             </if>
-            <if test="empEdu != null">
+            <if test="empEdu != null and empEdu!=''">
                 and emp_edu = #{empEdu,jdbcType=VARCHAR}
             </if>
-            <if test="empMajor != null">
+            <if test="empMajor != null  and empMajor!=''">
                 and emp_major = #{empMajor,jdbcType=VARCHAR}
             </if>
-            <if test="empHobby != null">
+            <if test="empHobby != null  and empHobby!=''">
                 and emp_hobby = #{empHobby,jdbcType=VARCHAR}
             </if>
-            <if test="empRemark != null">
+            <if test="empRemark != null  and empRemark!=''">
                 and emp_remark = #{empRemark,jdbcType=VARCHAR}
             </if>
             <if test="createTime != null">
