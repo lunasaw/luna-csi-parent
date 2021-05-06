@@ -3,16 +3,16 @@ package com.luna.csi.controller;
 import com.luna.common.dto.ResultDTO;
 import com.luna.common.dto.constant.ResultCode;
 import com.luna.csi.admin.LoginService;
+import com.luna.csi.entity.User;
+import com.luna.csi.req.EditPasswordReq;
 import com.luna.csi.req.LoginReq;
 import com.luna.csi.utils.CookieUtils;
 import com.luna.redis.util.RedisHashUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -37,5 +37,18 @@ public class LoginController {
         cookie.setMaxAge(60 * 60 * SESSION_EXPIRED_HOUR);
         response.addCookie(cookie);
         return new ResultDTO<>(true, ResultCode.SUCCESS, ResultCode.MSG_SUCCESS, sessionKey);
+    }
+
+    @GetMapping("/sysUser")
+    public ResultDTO<User> sysUser(HttpServletRequest request) {
+        return new ResultDTO<>(true, ResultCode.SUCCESS, ResultCode.MSG_SUCCESS,
+            loginService.sysUser(CookieUtils.getOneSessionKey(request)));
+    }
+
+    @PostMapping("/editPassword")
+    public ResultDTO<Boolean> editPassword(HttpServletRequest request, @RequestBody EditPasswordReq editPasswordReq) {
+        return new ResultDTO<>(true, ResultCode.SUCCESS, ResultCode.MSG_SUCCESS,
+            loginService.editPassword(CookieUtils.getOneSessionKey(request), editPasswordReq.getOldPassword(),
+                editPasswordReq.getNewPassword()));
     }
 }

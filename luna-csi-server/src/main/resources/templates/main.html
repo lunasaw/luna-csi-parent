@@ -5,11 +5,7 @@
 </head>
 <body class="layout-fixed">
 	<div fragment="navbar" class="wrapper" role="navigation">
-<!--		<script type="text/javascript">-->
-<!--			var module = "09282248e3ed4fb4a7d3c1c8585a7eb0";-->
-<!--		</script>-->
 		<div th:replace="components/header"></div>
-
 		<aside class="aside">
 			<div class="aside-inner">
 				<nav class="sidebar" data-sidebar-anyclick-close="">
@@ -18,8 +14,6 @@
 				</nav>
 			</div>
 		</aside>
-
-
 		<section id="content">
 			<div id="funTab"></div>
 		</section>
@@ -29,10 +23,33 @@
 	<script type="text/javascript">
 		/** 文档加载完成后立即执行的方法 */
 		// var weeks = new Array();
-
 		$(function () {
 			$("#nowTime").runTimer();
 		})
+
+		$(document).ready(function () {
+			$.ajax({
+				url: "/csi/user/api/sysUser", // url where to submit the request
+				type: "GET", // type of action POST || GET
+				success: function (result) {
+					// console.log(result);
+					let data;
+					try {
+						data = checkResultAndGetData(result);
+					} catch (error) {
+						console.log(error)
+						alert(JSON.stringify(error));
+						return;
+					}
+
+					console.log(data);
+					if (data == null) {
+						return;
+					}
+					$("#userInfo").text(data.username);
+				}
+			});
+		});
 	</script>
 </body>
 

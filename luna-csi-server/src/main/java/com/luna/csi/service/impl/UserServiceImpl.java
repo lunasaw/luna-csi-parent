@@ -77,8 +77,8 @@ public class UserServiceImpl implements UserService {
             throw new UserException(ResultCode.PARAMETER_INVALID, "用户不存在");
         }
         byEntity.setUsername(user.getUsername());
-        byEntity.setPassword(Md5Utils.md5(Md5Utils.md5(user.getPassword())));
         byEntity.setGender(user.getGender());
+        byEntity.setPassword(user.getPassword());
         byEntity.setCellphone(user.getCellphone());
         byEntity.setEmail(user.getEmail());
         byEntity.setStatus(user.getStatus());

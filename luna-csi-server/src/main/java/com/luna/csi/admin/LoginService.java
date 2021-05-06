@@ -43,4 +43,19 @@ public class LoginService {
         return nonceStrWithUUID;
     }
 
+    public User sysUser(String sessionKey) {
+        return (User)redisHashUtil.get(LoginInterceptor.sessionKey, sessionKey);
+    }
+
+    public Boolean editPassword(String sessionKey, String oldPassword, String newPassword) {
+        User user = (User)redisHashUtil.get(LoginInterceptor.sessionKey, sessionKey);
+        User byId = userService.getById(user.getId());
+
+        if (!byId.getPassword().equals(Md5Utils.md5(Md5Utils.md5(oldPassword)))) {
+            throw new UserException(ResultCode.PARAMETER_INVALID, "密码错误");
+        }
+
+        byId.setPassword(Md5Utils.md5(Md5Utils.md5(newPassword)));
+        return userService.update(byId) == 1;
+    }
 }
