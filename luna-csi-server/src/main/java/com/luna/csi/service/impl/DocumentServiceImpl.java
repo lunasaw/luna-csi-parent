@@ -1,11 +1,14 @@
 package com.luna.csi.service.impl;
 
+import com.luna.csi.config.LoginInterceptor;
 import com.luna.csi.dto.DocumentDTO;
+import com.luna.csi.entity.User;
 import com.luna.csi.mapper.DocumentMapper;
 import com.luna.csi.mapper.UserMapper;
 import com.luna.csi.service.DocumentService;
 import com.luna.csi.entity.Document;
 import com.luna.csi.utils.DO2DTOUtils;
+import com.luna.redis.util.RedisHashUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.github.pagehelper.PageHelper;
@@ -26,6 +29,9 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Autowired
     private UserMapper     userMapper;
+
+    @Autowired
+    private RedisHashUtil  redisHashUtil;
 
     @Override
     public Document getById(Long id) {
@@ -68,9 +74,9 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public int insert(Document document) {
-        // TODO 获取当前登陆用户 Session中拿 暂定为26
-        document.setCreateBy(26L);
+    public int insert(String sessionKey, Document document) {
+        User user = (User)redisHashUtil.get(LoginInterceptor.sessionKey, sessionKey);
+        document.setCreateBy(user.getId());
         return documentMapper.insert(document);
     }
 

@@ -78,6 +78,12 @@
 
         <dependency>
             <groupId>com.github.czy1024</groupId>
+            <artifactId>redis-spring-boot-starter</artifactId>
+            <version>1.0.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.czy1024</groupId>
             <artifactId>luna-common</artifactId>
             <version>1.0.8</version>
         </dependency>

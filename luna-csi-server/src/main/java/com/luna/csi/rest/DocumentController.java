@@ -5,11 +5,14 @@ import java.util.List;
 import com.github.pagehelper.PageInfo;
 import com.luna.common.dto.ResultDTO;
 import com.luna.common.dto.constant.ResultCode;
+import com.luna.csi.utils.CookieUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import com.luna.csi.entity.Document;
 import com.luna.csi.service.DocumentService;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @Author: luna
@@ -54,8 +57,8 @@ public class DocumentController {
     }
 
     @PostMapping("/insert")
-    public ResultDTO<Document> insert(@RequestBody Document document) {
-        documentService.insert(document);
+    public ResultDTO<Document> insert(HttpServletRequest request, @RequestBody Document document) {
+        documentService.insert(CookieUtils.getOneSessionKey(request), document);
         return new ResultDTO<>(true, ResultCode.SUCCESS, ResultCode.MSG_SUCCESS, document);
     }
 

@@ -1,6 +1,7 @@
 package com.luna.csi.service.impl;
 
 import com.luna.common.dto.constant.ResultCode;
+import com.luna.csi.config.LoginInterceptor;
 import com.luna.csi.dto.AnnoDTO;
 import com.luna.csi.entity.Dept;
 import com.luna.csi.entity.User;
@@ -12,6 +13,7 @@ import javax.annotation.Resource;
 
 import com.luna.csi.service.UserService;
 import com.luna.csi.utils.DO2DTOUtils;
+import com.luna.redis.util.RedisHashUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.github.pagehelper.PageHelper;
@@ -28,10 +30,13 @@ import java.util.stream.Collectors;
 public class AnnoServiceImpl implements AnnoService {
 
     @Autowired
-    private AnnoMapper  annoMapper;
+    private AnnoMapper    annoMapper;
 
     @Autowired
-    private UserService userService;
+    private UserService   userService;
+
+    @Autowired
+    private RedisHashUtil redisHashUtil;
 
     @Override
     public Anno getById(Long id) {
@@ -74,9 +79,9 @@ public class AnnoServiceImpl implements AnnoService {
     }
 
     @Override
-    public int insert(Anno anno) {
-        // TODO 获取当前登陆用户 Session中拿 暂定为26
-        anno.setUserId(26L);
+    public int insert(String sessionKey, Anno anno) {
+        User user = (User)redisHashUtil.get(LoginInterceptor.sessionKey, sessionKey);
+        anno.setUserId(user.getId());
         return annoMapper.insert(anno);
     }
 

@@ -70,7 +70,7 @@ public interface AnnoService {
      * @param anno 对象
      * @return 影响行数
      */
-    int insert(Anno anno);
+    int insert(String sessionKey, Anno anno);
 
     /**
      * 列表插入

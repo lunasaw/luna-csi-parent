@@ -5,6 +5,7 @@ import com.luna.common.dto.constant.ResultCode;
 import com.luna.csi.config.ServerConfig;
 import com.luna.csi.entity.Document;
 import com.luna.csi.service.DocumentService;
+import com.luna.csi.utils.CookieUtils;
 import com.luna.csi.utils.FileUploadUtils;
 import com.luna.csi.utils.FileUtils;
 import com.luna.csi.utils.StringUtils;
@@ -39,7 +40,8 @@ public class CommonController {
      */
     @PostMapping("/upload")
     @ResponseBody
-    public ResultDTO<Document> uploadFile(Document document, MultipartFile file) {
+    public ResultDTO<Document> uploadFile(HttpServletRequest request, Document document,
+        MultipartFile file) {
         try {
             // 上传并返回新文件名称
             String fileName = FileUploadUtils.upload(file);
@@ -55,7 +57,7 @@ public class CommonController {
                     return new ResultDTO<>(false, ResultCode.PARAMETER_INVALID, ResultCode.MSG_PARAMETER_INVALID);
                 }
             } else {
-                documentService.insert(document);
+                documentService.insert(CookieUtils.getOneSessionKey(request), document);
                 return new ResultDTO<>(true, ResultCode.SUCCESS, ResultCode.MSG_SUCCESS, document);
             }
         } catch (Exception e) {

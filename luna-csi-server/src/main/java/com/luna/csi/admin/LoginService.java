@@ -1,10 +1,15 @@
 package com.luna.csi.admin;
 
+import com.google.common.collect.ImmutableMap;
 import com.luna.common.dto.constant.ResultCode;
 import com.luna.common.encrypt.Md5Utils;
+import com.luna.common.text.RandomStrUtil;
+import com.luna.csi.config.LoginInterceptor;
 import com.luna.csi.entity.User;
 import com.luna.csi.exception.UserException;
 import com.luna.csi.service.UserService;
+import com.luna.csi.utils.CookieUtils;
+import com.luna.redis.util.RedisHashUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,9 +22,12 @@ import org.springframework.stereotype.Service;
 public class LoginService {
 
     @Autowired
-    private UserService userService;
+    private UserService   userService;
 
-    public boolean login(String username, String password) {
+    @Autowired
+    private RedisHashUtil redisHashUtil;
+
+    public String login(String username, String password) {
         User user = userService.getByEntity(new User(username));
         if (user == null) {
             throw new UserException(ResultCode.PARAMETER_INVALID, "用户不存在");
@@ -30,7 +38,9 @@ public class LoginService {
             throw new UserException(ResultCode.PARAMETER_INVALID, "密码错误");
         }
 
-        return true;
+        String nonceStrWithUUID = RandomStrUtil.generateNonceStrWithUUID();
+        redisHashUtil.set(LoginInterceptor.sessionKey, ImmutableMap.of(nonceStrWithUUID, user));
+        return nonceStrWithUUID;
     }
 
 }

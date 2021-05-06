@@ -70,7 +70,7 @@ public interface DocumentService {
      * @param document 对象
      * @return 影响行数
      */
-    int insert(Document document);
+    int insert(String sessionKey, Document document);
 
     /**
      * 列表插入

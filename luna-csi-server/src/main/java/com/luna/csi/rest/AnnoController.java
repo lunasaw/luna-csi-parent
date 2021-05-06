@@ -5,11 +5,15 @@ import java.util.List;
 import com.github.pagehelper.PageInfo;
 import com.luna.common.dto.ResultDTO;
 import com.luna.common.dto.constant.ResultCode;
+import com.luna.csi.utils.CookieUtils;
+import com.luna.redis.util.RedisHashUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import com.luna.csi.entity.Anno;
 import com.luna.csi.service.AnnoService;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @Author: luna
@@ -54,8 +58,8 @@ public class AnnoController {
     }
 
     @PostMapping("/insert")
-    public ResultDTO<Anno> insert(@RequestBody Anno anno) {
-        annoService.insert(anno);
+    public ResultDTO<Anno> insert(HttpServletRequest request, @RequestBody Anno anno) {
+        annoService.insert(CookieUtils.getOneSessionKey(request), anno);
         return new ResultDTO<>(true, ResultCode.SUCCESS, ResultCode.MSG_SUCCESS, anno);
     }
 

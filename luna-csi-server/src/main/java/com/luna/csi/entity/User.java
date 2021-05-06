@@ -138,4 +138,21 @@ public class User implements Serializable {
         this.version = version;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+            "id=" + id +
+            ", username='" + username + '\'' +
+            ", password='" + password + '\'' +
+            ", gender='" + gender + '\'' +
+            ", cellphone='" + cellphone + '\'' +
+            ", email='" + email + '\'' +
+            ", status=" + status +
+            ", faceurl='" + faceurl + '\'' +
+            ", facedata='" + facedata + '\'' +
+            ", createTime=" + createTime +
+            ", modifiedTime=" + modifiedTime +
+            ", version=" + version +
+            '}';
+    }
 }
