@@ -80,7 +80,7 @@ public class AnnoServiceImpl implements AnnoService {
 
     @Override
     public int insert(String sessionKey, Anno anno) {
-        User user = (User)redisHashUtil.get(LoginInterceptor.sessionKey, sessionKey);
+        User user = (User)redisHashUtil.get(LoginInterceptor.sessionKey + ":" + sessionKey, sessionKey);
         anno.setUserId(user.getId());
         return annoMapper.insert(anno);
     }

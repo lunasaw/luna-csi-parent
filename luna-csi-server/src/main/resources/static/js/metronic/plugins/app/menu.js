@@ -627,26 +627,35 @@ function GetQueryString(name) {
 }
 
 function loginOut() {
-    window.location.replace("login.html");
-    /*
+
     $.ajax({
         type: "POST",
-        url: "/hrm/user/loginOut",
+        url: "/csi/user/api/logout",
         async: true,
-        data:{
-
-            },
+        data: {},
         dataType: "json",
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-           alert("出错了，请于管理员联系");
+        error: function (XMLHttpRequest, textStatus, text) {
+            $.ligerDialog.error(JSON.stringify(text), "出错了，请于管理员联系");
         },
-        success: function (json) {
-
-            window.location.replace("/hrm/");
-
+        success: function (result) {
+            console.log(result);
+            let data;
+            try {
+                data = checkResultAndGetData(result);
+            } catch (error) {
+                console.log(error)
+                // alert(JSON.stringify(error));
+                $.ligerDialog.error("出错了，请于管理员联系");
+                return;
+            }
+            if (data) {
+                window.location.replace('/csi/login');
+            } else {
+                $.ligerDialog.warn("操作失败");
+            }
         }
     });
-*/
+
 }
 
 $(function () {

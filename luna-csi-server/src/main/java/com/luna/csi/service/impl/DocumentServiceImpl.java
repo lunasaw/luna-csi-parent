@@ -75,7 +75,7 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public int insert(String sessionKey, Document document) {
-        User user = (User)redisHashUtil.get(LoginInterceptor.sessionKey, sessionKey);
+        User user = (User)redisHashUtil.get(LoginInterceptor.sessionKey + ":" + sessionKey, sessionKey);
         document.setCreateBy(user.getId());
         return documentMapper.insert(document);
     }

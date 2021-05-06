@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Objects;
 
 /**
  * @author luna@mac
@@ -26,15 +28,16 @@ public class LoginController {
     @Autowired
     private LoginService loginService;
 
-    /** session过期时间，单位小时 */
-    int                  SESSION_EXPIRED_HOUR = 24;
-
     @PostMapping("/login")
     public ResultDTO<String> login(@RequestBody LoginReq loginReq, HttpServletResponse response) {
         String sessionKey = loginService.login(loginReq.getUsername(), loginReq.getPassword());
         Cookie cookie = new Cookie(CookieUtils.SESSION_KEY_NAME, sessionKey);
         cookie.setPath("/");
-        cookie.setMaxAge(60 * 60 * SESSION_EXPIRED_HOUR);
+        if (Objects.equals(loginReq.getRememberPwd(), "on")) {
+            cookie.setMaxAge(7 * 60 * 60 * LoginService.SESSION_EXPIRED_HOUR);
+        } else {
+            cookie.setMaxAge(60 * 60);
+        }
         response.addCookie(cookie);
         return new ResultDTO<>(true, ResultCode.SUCCESS, ResultCode.MSG_SUCCESS, sessionKey);
     }
@@ -50,5 +53,12 @@ public class LoginController {
         return new ResultDTO<>(true, ResultCode.SUCCESS, ResultCode.MSG_SUCCESS,
             loginService.editPassword(CookieUtils.getOneSessionKey(request), editPasswordReq.getOldPassword(),
                 editPasswordReq.getNewPassword()));
+    }
+
+    @PostMapping("/logout")
+    public ResultDTO<Boolean> logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        return new ResultDTO<>(true, ResultCode.SUCCESS, ResultCode.MSG_SUCCESS,
+            loginService.logout(CookieUtils.getOneSessionKey(request)));
     }
 }

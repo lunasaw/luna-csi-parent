@@ -38,7 +38,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         throws Exception {
         String oneSessionKey = CookieUtils.getSessionKeyFromRequest(request);
         if (oneSessionKey != null) {
-            User user = (User)redisHashUtil.get(sessionKey, oneSessionKey);
+            User user = (User)redisHashUtil.get(LoginInterceptor.sessionKey + ":" + oneSessionKey, oneSessionKey);
             if (user != null) {
                 return true;
             } else {
@@ -48,11 +48,13 @@ public class LoginInterceptor implements HandlerInterceptor {
                     new ResultDTO<>(false, ResultCode.ERROR_SYSTEM_EXCEPTION, ResultCode.MSG_ERROR_SYSTEM_EXCEPTION)));
                 printWriter.flush();
                 printWriter.close();
+                return false;
             }
+        } else {
+            // 若不满验证，则直接跳转到登录界面
+            response.sendRedirect(request.getContextPath() + "/login");
+            return true;
         }
-        // 若不满验证，则直接跳转到登录界面
-        response.sendRedirect(request.getContextPath() + "/login");
-        return true;
     }
 
     @Override

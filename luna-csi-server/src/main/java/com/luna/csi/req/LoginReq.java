@@ -13,14 +13,14 @@ public class LoginReq {
 
     private String password;
 
-    private String readMe;
+    private String rememberPwd;
 
-    public String getReadMe() {
-        return readMe;
+    public String getRememberPwd() {
+        return rememberPwd;
     }
 
-    public void setReadMe(String readMe) {
-        this.readMe = readMe;
+    public void setRememberPwd(String rememberPwd) {
+        this.rememberPwd = rememberPwd;
     }
 
     public String getUsername() {
