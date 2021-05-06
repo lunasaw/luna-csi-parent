@@ -1,16 +1,24 @@
 package com.luna.csi.service.impl;
 
+import com.luna.common.dto.constant.ResultCode;
+import com.luna.csi.dto.AnnoDTO;
+import com.luna.csi.entity.Dept;
+import com.luna.csi.entity.User;
+import com.luna.csi.exception.UserException;
 import com.luna.csi.mapper.AnnoMapper;
 import com.luna.csi.service.AnnoService;
 import com.luna.csi.entity.Anno;
 import javax.annotation.Resource;
 
+import com.luna.csi.service.UserService;
+import com.luna.csi.utils.DO2DTOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @Author: luna
@@ -20,7 +28,10 @@ import java.util.List;
 public class AnnoServiceImpl implements AnnoService {
 
     @Autowired
-    private AnnoMapper annoMapper;
+    private AnnoMapper  annoMapper;
+
+    @Autowired
+    private UserService userService;
 
     @Override
     public Anno getById(Long id) {
@@ -41,7 +52,13 @@ public class AnnoServiceImpl implements AnnoService {
     public PageInfo listPageByEntity(int page, int pageSize, Anno anno) {
         PageHelper.startPage(page, pageSize);
         List<Anno> list = annoMapper.listByEntity(anno);
-        return new PageInfo(list);
+        PageInfo pageInfo = new PageInfo(list);
+        List<AnnoDTO> collect = list.stream().map(anno1 -> {
+            User byId = userService.getById(anno1.getUserId());
+            return DO2DTOUtils.Anno2AnnoDTO(anno1, byId.getUsername());
+        }).collect(Collectors.toList());
+        pageInfo.setList(collect);
+        return pageInfo;
     }
 
     @Override
@@ -58,6 +75,8 @@ public class AnnoServiceImpl implements AnnoService {
 
     @Override
     public int insert(Anno anno) {
+        // TODO 获取当前登陆用户 Session中拿 暂定为26
+        anno.setUserId(26L);
         return annoMapper.insert(anno);
     }
 
@@ -68,7 +87,15 @@ public class AnnoServiceImpl implements AnnoService {
 
     @Override
     public int update(Anno anno) {
-        return annoMapper.update(anno);
+
+        Anno byId = annoMapper.getById(anno.getId());
+        if (byId == null) {
+            throw new UserException(ResultCode.PARAMETER_INVALID, "通知不存在");
+        }
+
+        byId.setAnnoTitle(anno.getAnnoTitle());
+        byId.setAnnoContent(anno.getAnnoContent());
+        return annoMapper.update(byId);
     }
 
     @Override

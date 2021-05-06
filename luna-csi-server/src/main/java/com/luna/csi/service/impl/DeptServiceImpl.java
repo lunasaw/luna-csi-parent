@@ -60,9 +60,6 @@ public class DeptServiceImpl implements DeptService {
 
     @Override
     public int insert(Dept dept) {
-        Date date = new Date();
-        dept.setCreateTime(date);
-        dept.setModifiedTime(date);
         return deptMapper.insert(dept);
     }
 

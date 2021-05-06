@@ -9,12 +9,53 @@
 	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3"/>
 	<meta http-equiv="description" content="This is my page"/>
 	<link href="fkjava.ico" rel="shortcut icon" type="image/x-icon"/>
-
+	<script type="text/javascript" src="../js/jquery-1.11.0.js"></script>
+	<script type="text/javascript" src="../js/jquery-migrate-1.2.1.js"></script>
 </head>
 <body>
-	<center><h1>参加会议通知</h1></center>
+	<center><h1 id="title"></h1></center>
 	<br/>
-	今天有技术部有会议
+	<div id="content">
 
+	</div>
+
+
+	<script type="text/javascript">
+		function checkResultAndGetData($result) {
+			if ($result.success == false) {
+				throw $result;
+			}
+			return $result.data;
+		}
+
+		let noticeId = null;
+		$(document).ready(function () {
+			// 获取url上的site参数并且传入表单
+			let searchParams = new URLSearchParams(window.location.search);
+			noticeId = searchParams.get("noticeId");
+			$.ajax({
+				url: "/csi/anno/api/get/" + noticeId, // url where to submit the request
+				type: "GET", // type of action POST || GET
+				success: function (result) {
+					// console.log(result);
+					let data;
+					try {
+						data = checkResultAndGetData(result);
+					} catch (error) {
+						console.log(error)
+						alert(JSON.stringify(error));
+						return;
+					}
+
+					console.log(data);
+					if (data == null) {
+						return;
+					}
+					$("#title").text(data.annoTitle);
+					$("#content").text(data.annoContent);
+				}
+			});
+		});
+	</script>
 </body>
 </html>

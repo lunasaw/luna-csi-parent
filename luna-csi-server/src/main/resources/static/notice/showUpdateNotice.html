@@ -18,38 +18,6 @@
 	<script src="../js/ligerUI/js/plugins/ligerDialog.js" type="text/javascript"></script>
 	<script src="../js/ligerUI/js/plugins/ligerResizable.js" type="text/javascript"></script>
 	<link href="../css/pager.css" type="text/css" rel="stylesheet"/>
-	<script type="text/javascript">
-
-		function submit() {
-
-			/** 表单提交的校验 */
-				//$("#noticeForm").submit(function(){
-			var title = $("#title");
-			var content = $("#content");
-			var msg = "";
-			if ($.trim(title.val()) == "") {
-				msg = "公告标题不能为空！";
-				title.focus();
-			} else if ($.trim(title.val()).length <= 2) {
-				msg = "请输入两个字符以上的标题！";
-				title.focus();
-			} else if ($.trim(content.val()) == "") {
-				msg = "公告内容不能为空！";
-				content.focus();
-			}
-			if (msg != "") {
-				$.ligerDialog.error(msg);
-				return false;
-			} else {
-				return true;
-			}
-			//$("#noticeForm").submit();
-
-			//});
-		}
-
-
-	</script>
 </head>
 <body>
 	<table width="100%" border="0" cellpadding="0" cellspacing="0">
@@ -69,8 +37,6 @@
 			<td>
 
 				<!-- 隐藏表单，flag表示添加标记 -->
-				<input type="hidden" name="flag" value="2">
-				<input type="hidden" name="id" value="${notice.id }">
 				<table width="100%" border="0" cellpadding="0" cellspacing="10" class="main_tab">
 					<tr>
 						<td class="font3 fftd">
@@ -79,33 +45,120 @@
 						</td>
 					</tr>
 					<tr>
-						<td class="main_tdbor"></td>
-					</tr>
-
-					<tr>
 						<td class="font3 fftd">公告内容：<br/>
 							<textarea name="content" cols="88" rows="11" id="content">今天有技术部有会议</textarea>
 						</td>
 					</tr>
 					<tr>
-						<td class="main_tdbor"></td>
-					</tr>
-
-					<tr>
 						<td class="font3 fftd">
 							<input type="button" onclick="submit()" value="修改">
-							<input type="reset" value="重置">
+							<input type="reset" value="重置" onclick="reset()">
 						</td>
 					</tr>
-					<tr>
-						<td class="main_tdbor"></td>
-					</tr>
-
 				</table>
 
 			</td>
 		</tr>
 	</table>
-	<div style="height:10px;"></div>
+	<script type="text/javascript">
+
+		function checkResultAndGetData($result) {
+			if ($result.success == false) {
+				throw $result;
+			}
+			return $result.data;
+		}
+
+		function reset() {
+			window.location.replace('/csi/notice/notice.html');
+		}
+
+		function submit() {
+
+			/** 员工表单提交 */
+			let annoTitle = $("#title").val();
+			let annoContent = $("#content").val();
+
+
+			let noticeInfo = {
+				"id": noticeId,
+				"annoTitle": annoTitle,
+				"annoContent": annoContent
+			};
+			let msg = "";
+			if ($.trim(annoTitle) == "") {
+				msg = "公告标题不能为空！";
+				title.focus();
+			} else if ($.trim(annoTitle).length <= 2) {
+				msg = "请输入两个字符以上的标题！";
+				title.focus();
+			} else if ($.trim(annoContent) == "") {
+				msg = "公告内容不能为空！";
+				content.focus();
+			}
+			if (msg != "") {
+				$.ligerDialog.error(msg);
+				return false;
+			}
+			console.log(JSON.stringify(noticeInfo))
+			$.ajax({
+				type: "PUT",
+				url: "/csi/anno/api/update",
+				async: true,
+				contentType: 'application/json;charset=UTF-8',
+				data: JSON.stringify(noticeInfo),
+				dataType: "json",
+				error: function (XMLHttpRequest, textStatus, text) {
+					$.ligerDialog.error(JSON.stringify(text), "出错了，请于管理员联系");
+				},
+				success: function (result) {
+					console.log(result);
+					let data;
+					try {
+						data = checkResultAndGetData(result);
+					} catch (error) {
+						console.log(error)
+						// alert(JSON.stringify(error));
+						$.ligerDialog.error(JSON.stringify(error), "出错了，请于管理员联系");
+						return;
+					}
+					if (data) {
+						$.ligerDialog.success("修改成功");
+					} else {
+						$.ligerDialog.warn("请重试", "修改失败");
+					}
+				}
+			});
+		}
+
+		let noticeId = null;
+		$(document).ready(function () {
+			// 获取url上的site参数并且传入表单
+			let searchParams = new URLSearchParams(window.location.search);
+			noticeId = searchParams.get("noticeId");
+			$.ajax({
+				url: "/csi/anno/api/get/" + noticeId, // url where to submit the request
+				type: "GET", // type of action POST || GET
+				success: function (result) {
+					// console.log(result);
+					let data;
+					try {
+						data = checkResultAndGetData(result);
+					} catch (error) {
+						console.log(error)
+						alert(JSON.stringify(error));
+						return;
+					}
+
+					console.log(data);
+					if (data == null) {
+						return;
+					}
+					$("#title").attr("value", data.annoTitle);
+					$("#content").attr("value", data.annoContent);
+				}
+			});
+		});
+	</script>
 </body>
 </html>

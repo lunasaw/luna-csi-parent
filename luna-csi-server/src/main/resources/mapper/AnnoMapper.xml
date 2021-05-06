@@ -159,7 +159,7 @@
             modified_time = now(),
             version = version + 1,
         </set>
-        where id = #{id,jdbcType=INTEGER} and version = #{version,jdbcType=OTHER},
+        where id = #{id,jdbcType=INTEGER} and version = #{version,jdbcType=OTHER}
     </update>
 
     <!--通过表字段修改实体属性不为null的列-->

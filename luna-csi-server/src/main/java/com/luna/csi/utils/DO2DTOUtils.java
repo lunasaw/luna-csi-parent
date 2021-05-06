@@ -2,8 +2,10 @@ package com.luna.csi.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.luna.common.date.DateUtil;
+import com.luna.csi.dto.AnnoDTO;
 import com.luna.csi.dto.DocumentDTO;
 import com.luna.csi.dto.EmpDTO;
+import com.luna.csi.entity.Anno;
 import com.luna.csi.entity.Document;
 import com.luna.csi.entity.Emp;
 import org.apache.commons.lang3.StringUtils;
@@ -58,5 +60,20 @@ public class DO2DTOUtils {
         documentDTO.setModifiedTime(DateUtil.parseDateToStr(DateUtil.YYYY_MM_DD, document.getModifiedTime()));
         documentDTO.setVersion(document.getVersion());
         return documentDTO;
+    }
+
+    public static AnnoDTO Anno2AnnoDTO(Anno anno, String username) {
+        if (anno == null) {
+            return null;
+        }
+        AnnoDTO annoDTO = new AnnoDTO();
+        annoDTO.setId(anno.getId());
+        annoDTO.setCreateBy(username);
+        annoDTO.setAnnoTitle(anno.getAnnoTitle());
+        annoDTO.setAnnoContent(anno.getAnnoContent());
+        annoDTO.setCreateTime(DateUtil.parseDateToStr(DateUtil.YYYY_MM_DD, anno.getCreateTime()));
+        annoDTO.setModifiedTime(DateUtil.parseDateToStr(DateUtil.YYYY_MM_DD, anno.getCreateTime()));
+        annoDTO.setVersion(anno.getVersion());
+        return annoDTO;
     }
 }

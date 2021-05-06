@@ -93,7 +93,7 @@
 					<tr>
 						<td class="font3 fftd">
 							<input type="button" onclick="submit()" value="添加">
-							<input type="reset" value="重置">
+							<input type="reset" value="重置" onclick="reset()">
 						</td>
 					</tr>
 					<tr>
@@ -105,6 +105,71 @@
 			</td>
 		</tr>
 	</table>
-	<div style="height:10px;"></div>
+	<script type="text/javascript">
+		function checkResultAndGetData($result) {
+			if ($result.success == false) {
+				throw $result;
+			}
+			return $result.data;
+		}
+
+		function reset() {
+			window.location.replace('/csi/notice/notice.html');
+		}
+
+		function submit() {
+			let title = $("#title").val();
+			let content = $("#content").val();
+			let msg = "";
+			let noticeInfo = {
+				"annoTitle": title,
+				"annoContent": content
+			};
+			if ($.trim(title) == "") {
+				msg = "公告标题不能为空！";
+				title.focus();
+			} else if ($.trim(title).length <= 2) {
+				msg = "请输入两个字符以上的标题！";
+				title.focus();
+			} else if ($.trim(content) == "") {
+				msg = "公告内容不能为空！";
+				content.focus();
+			}
+			if (msg != "") {
+				$.ligerDialog.error(msg);
+				return false;
+			}
+			console.log(JSON.stringify(noticeInfo));
+
+			$.ajax({
+				type: "POST",
+				url: "/csi/anno/api/insert",
+				async: true,
+				contentType: 'application/json;charset=UTF-8',
+				data: JSON.stringify(noticeInfo),
+				dataType: "json",
+				error: function (XMLHttpRequest, textStatus, text) {
+					$.ligerDialog.error(JSON.stringify(text), "出错了，请于管理员联系");
+				},
+				success: function (result) {
+					console.log(result);
+					let data;
+					try {
+						data = checkResultAndGetData(result);
+					} catch (error) {
+						console.log(error)
+						// alert(JSON.stringify(error));
+						$.ligerDialog.error(JSON.stringify("出错了，请于管理员联系"));
+						return;
+					}
+					if (data) {
+						$.ligerDialog.success("修改成功");
+					} else {
+						$.ligerDialog.warn("修改失败");
+					}
+				}
+			});
+		}
+	</script>
 </body>
 </html>
