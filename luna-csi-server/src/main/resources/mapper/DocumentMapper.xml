@@ -4,6 +4,7 @@
 
     <resultMap type="com.luna.csi.entity.Document" id="DocumentResultMap">
         <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="createBy" column="create_by" jdbcType="INTEGER"/>
         <result property="fileTitle" column="file_title" jdbcType="VARCHAR"/>
         <result property="fileDescription" column="file_description" jdbcType="VARCHAR"/>
         <result property="fileUrl" column="file_url" jdbcType="VARCHAR"/>
@@ -14,7 +15,7 @@
 
     <sql id="table_field">
         id
-        , file_title, file_description, file_url, create_time, modified_time, version
+        , create_by, file_title, file_description, file_url, create_time, modified_time, version
     </sql>
 
     <!--通过Id查询单个-->
@@ -34,6 +35,9 @@
         <where>
             <if test="id != null  ">
                 and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="createBy != null  ">
+                and create_by = #{createBy,jdbcType=INTEGER}
             </if>
             <if test="fileTitle != null  and fileTitle != '' ">
                 and file_title = #{fileTitle,jdbcType=VARCHAR}
@@ -64,6 +68,9 @@
         <where>
             <if test="id != null  ">
                 and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="createBy != null  ">
+                and create_by = #{createBy,jdbcType=INTEGER}
             </if>
             <if test="fileTitle != null  and fileTitle != '' ">
                 and file_title = #{fileTitle,jdbcType=VARCHAR}
@@ -104,6 +111,9 @@
             <if test="id != null  ">
                 id,
             </if>
+            <if test="createBy != null  ">
+                create_by,
+            </if>
             <if test="fileTitle != null  and fileTitle != '' ">
                 file_title,
             </if>
@@ -120,6 +130,9 @@
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null  ">
                 #{id,jdbcType=INTEGER},
+            </if>
+            <if test="createBy != null  ">
+                #{createBy,jdbcType=INTEGER},
             </if>
             <if test="fileTitle != null  and fileTitle != '' ">
                 #{fileTitle,jdbcType=VARCHAR},
@@ -139,11 +152,11 @@
     <!--批量新增所有列，列表长度不能为0，且列表id统一为null或者统一不为null-->
     <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true" parameterType="list">
         insert into tb_document
-        (file_title, file_description, file_url, create_time, modified_time, version)
+        (create_by, file_title, file_description, file_url, create_time, modified_time, version)
         values
         <foreach item="item" collection="list" separator="," open="" close="" index="index">
-            (#{item.fileTitle,jdbcType=VARCHAR}, #{item.fileDescription,jdbcType=VARCHAR},
-            #{item.fileUrl,jdbcType=VARCHAR}, now(),
+            (#{item.createBy,jdbcType=INTEGER}, #{item.fileTitle,jdbcType=VARCHAR},
+            #{item.fileDescription,jdbcType=VARCHAR}, #{item.fileUrl,jdbcType=VARCHAR}, now(),
             now(),
             0)
         </foreach>
@@ -153,6 +166,9 @@
     <update id="update" parameterType="com.luna.csi.entity.Document">
         update tb_document
         <set>
+            <if test="createBy != null  ">
+                create_by = #{createBy,jdbcType=INTEGER},
+            </if>
             <if test="fileTitle != null   and fileTitle != ''">
                 file_title = #{fileTitle,jdbcType=VARCHAR},
             </if>
@@ -165,13 +181,16 @@
             modified_time = now(),
             version = version + 1,
         </set>
-        where id = #{id,jdbcType=INTEGER} and version = #{version,jdbcType=OTHER},
+        where id = #{id,jdbcType=INTEGER} and version = #{version,jdbcType=OTHER}
     </update>
 
     <!--通过表字段修改实体属性不为null的列-->
     <update id="updateByField">
         update tb_document
         <set>
+            <if test="where.createBy == null and set.createBy != null">
+                create_by = #{set.createBy,jdbcType=INTEGER},
+            </if>
             <if test="where.fileTitle == null and set.fileTitle != null and set.fileTitle != ''">
                 file_title = #{set.fileTitle,jdbcType=VARCHAR},
             </if>
@@ -187,6 +206,9 @@
         <where>
             <if test="where.id != null and id != ''">
                 and id = #{where.id,jdbcType=INTEGER}
+            </if>
+            <if test="where.createBy != null and createBy != ''">
+                and create_by = #{where.createBy,jdbcType=INTEGER}
             </if>
             <if test="where.fileTitle != null and fileTitle != ''">
                 and file_title = #{where.fileTitle,jdbcType=VARCHAR}
@@ -205,6 +227,11 @@
     <update id="updateBatch" parameterType="list">
         update tb_document
         <trim prefix="set" suffixOverrides=",">
+            <trim prefix="create_by = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.createBy}
+                </foreach>
+            </trim>
             <trim prefix="file_title = case" suffix="end,">
                 <foreach collection="list" item="item" index="index">
                     when id = #{item.id} then #{item.fileTitle}
@@ -248,6 +275,9 @@
     <delete id="deleteByEntity" parameterType="com.luna.csi.entity.Document">
         delete from tb_document
         <where>
+            <if test="createBy != null  ">
+                and create_by = #{createBy,jdbcType=INTEGER}
+            </if>
             <if test="fileTitle != null  and fileTitle != '' ">
                 and file_title = #{fileTitle,jdbcType=VARCHAR}
             </if>
@@ -279,6 +309,9 @@
         <where>
             <if test="id != null  ">
                 and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="createBy != null  ">
+                and create_by = #{createBy,jdbcType=INTEGER}
             </if>
             <if test="fileTitle != null  and fileTitle != '' ">
                 and file_title = #{fileTitle,jdbcType=VARCHAR}

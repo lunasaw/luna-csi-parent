@@ -13,7 +13,7 @@ import com.luna.csi.service.DocumentService;
 
 /**
  * @Author: luna
- * @CreateTime: 2021-04-30 11:48:43
+ * @CreateTime: 2021-05-06 10:55:59
  */
 @RestController
 @RequestMapping("/document/api")
@@ -77,7 +77,7 @@ public class DocumentController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResultDTO<Boolean> deleteOne(@PathVariable(value = "Long id") Long id) {
+    public ResultDTO<Boolean> deleteOne(@PathVariable(value = "id") Long id) {
         return new ResultDTO<>(true, ResultCode.SUCCESS, ResultCode.MSG_SUCCESS, documentService.deleteById(id) == 1);
     }
 

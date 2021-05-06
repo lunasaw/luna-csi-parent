@@ -77,7 +77,7 @@ public class AnnoController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResultDTO<Boolean> deleteOne(@PathVariable(value = "Long id") Long id) {
+    public ResultDTO<Boolean> deleteOne(@PathVariable(value = "id") Long id) {
         return new ResultDTO<>(true, ResultCode.SUCCESS, ResultCode.MSG_SUCCESS, annoService.deleteById(id) == 1);
     }
 

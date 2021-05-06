@@ -1,32 +1,29 @@
-package com.luna.csi.entity;
+package com.luna.csi.dto;
 
 import java.util.Date;
-import java.io.Serializable;
 
 /**
- * 文档信息表(Document)实体类
- *
- * @author luna
- * @since 2021-05-06 10:55:58
+ * @author luna@mac
+ * 2021年05月06日 11:00
  */
-public class Document implements Serializable {
-    private static final long serialVersionUID = 203135385488207859L;
+public class DocumentDTO {
+
     /** 文档编号 */
-    private Long              id;
+    private Long   id;
     /** 创建人 */
-    private Long              createBy;
+    private String createBy;
     /** 文档标题 */
-    private String            fileTitle;
+    private String fileTitle;
     /** 文档描述 */
-    private String            fileDescription;
+    private String fileDescription;
     /** 文档地址 */
-    private String            fileUrl;
+    private String fileUrl;
     /** 创建时间 */
-    private Date              createTime;
+    private String createTime;
     /** 修改时间 */
-    private Date              modifiedTime;
+    private String modifiedTime;
     /** 锁 */
-    private Object            version;
+    private Object version;
 
     public Long getId() {
         return id;
@@ -36,11 +33,11 @@ public class Document implements Serializable {
         this.id = id;
     }
 
-    public Long getCreateBy() {
+    public String getCreateBy() {
         return createBy;
     }
 
-    public void setCreateBy(Long createBy) {
+    public void setCreateBy(String createBy) {
         this.createBy = createBy;
     }
 
@@ -68,19 +65,19 @@ public class Document implements Serializable {
         this.fileUrl = fileUrl;
     }
 
-    public Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 
-    public Date getModifiedTime() {
+    public String getModifiedTime() {
         return modifiedTime;
     }
 
-    public void setModifiedTime(Date modifiedTime) {
+    public void setModifiedTime(String modifiedTime) {
         this.modifiedTime = modifiedTime;
     }
 
@@ -94,14 +91,14 @@ public class Document implements Serializable {
 
     @Override
     public String toString() {
-        return "Document{" +
+        return "DocumentDTO{" +
             "id=" + id +
-            ", createBy=" + createBy +
+            ", createBy='" + createBy + '\'' +
             ", fileTitle='" + fileTitle + '\'' +
             ", fileDescription='" + fileDescription + '\'' +
             ", fileUrl='" + fileUrl + '\'' +
-            ", createTime=" + createTime +
-            ", modifiedTime=" + modifiedTime +
+            ", createTime='" + createTime + '\'' +
+            ", modifiedTime='" + modifiedTime + '\'' +
             ", version=" + version +
             '}';
     }
