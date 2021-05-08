@@ -5,9 +5,11 @@ import java.io.PrintWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.luna.common.net.HttpUtilsConstant;
 import com.luna.csi.entity.User;
 import com.luna.csi.utils.CookieUtils;
 import com.luna.redis.util.RedisHashUtil;
+import com.sun.tools.internal.ws.wsdl.document.http.HTTPConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +44,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             if (user != null) {
                 return true;
             } else {
-                response.setHeader("Content-Type", "application/json");
+                response.setHeader("Content-Type", HttpUtilsConstant.JSON);
                 PrintWriter printWriter = response.getWriter();
                 printWriter.write(JSON.toJSONString(
                     new ResultDTO<>(false, ResultCode.ERROR_SYSTEM_EXCEPTION, ResultCode.MSG_ERROR_SYSTEM_EXCEPTION)));

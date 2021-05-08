@@ -20,6 +20,7 @@ public class WebConfigurer implements WebMvcConfigurer {
         registry.addInterceptor(loginInterceptor).addPathPatterns("/**")
             .excludePathPatterns( // 添加不拦截路径
                 "/login",
+                "/user/api/faceLogin",
                 "/user/api/logout",
                 "/user/api/login",
                 "/**/*.html", // html静态资源

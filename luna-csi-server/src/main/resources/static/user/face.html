@@ -97,8 +97,6 @@
 </head>
 
 <body>
-
-
 	<dl class="admin_login">
 		<dt>
 			<strong>CSI员工之家</strong><em></em> <strong>请把你的脸放摄像头面前</strong>
@@ -139,40 +137,52 @@
 
 				video.onloadmetadate = function (e) {
 					video.play();
-
 				}
 			});
 
 
 		function query() {
-
 			//把流媒体数据画到convas画布上去
 			context.drawImage(video, 0, 0, 530, 300);
-			var base = getBase64();
+			let base = getBase64();
+			$.ajax({
+				type: "POST",
+				url: "/csi/user/api/registerFace",
+				data: {"faceUrl": base},
+				dataType: "json",
+				success: function (result) {
+					console.log(result);
+					let data;
+					try {
+						data = checkResultAndGetData(result);
+					} catch (error) {
+						console.log(error)
+						alert(JSON.stringify(error));
+						return;
+					}
+					console.log(data);
+					if (data == null) {
+						return;
+					}
+					$.MsgBox.Alert("消息", "注册成功");
+				}
+			});
+		}
 
-
-			//$.ajax({
-			//type:"post",
-			//url:"/hrm/user/faceRegister",
-			//data:{"base":base},
-			//dataType: "json",
-			//success:function(json){
-
-			$.MsgBox.Alert("消息", "注册成功");
-
-
-			//}
-			//});
-
+		function checkResultAndGetData($result) {
+			if ($result.success == false) {
+				throw $result;
+			}
+			return $result.data;
 		}
 
 		function getBase64() {
-			var imgSrc = document.getElementById("canvas").toDataURL(
+			let imgSrc = document.getElementById("canvas").toDataURL(
 				"image/png");
 
 			return imgSrc.split("base64,")[1];
 
-		};
+		}
 	</script>
 
 

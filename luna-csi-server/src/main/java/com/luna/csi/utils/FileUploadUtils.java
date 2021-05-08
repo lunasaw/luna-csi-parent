@@ -108,14 +108,14 @@ public class FileUploadUtils {
     /**
      * 编码文件名
      */
-    public static final String extractFilename(MultipartFile file) {
+    public static String extractFilename(MultipartFile file) {
         String fileName = file.getOriginalFilename();
         String extension = getExtension(file);
         fileName = DateUtil.datePath() + "/" + RandomStrUtil.generateNonceStrWithUUID() + "." + extension;
         return fileName;
     }
 
-    private static final File getAbsoluteFile(String uploadDir, String fileName) throws IOException {
+    private static File getAbsoluteFile(String uploadDir, String fileName) throws IOException {
         File desc = new File(uploadDir + File.separator + fileName);
 
         if (!desc.getParentFile().exists()) {

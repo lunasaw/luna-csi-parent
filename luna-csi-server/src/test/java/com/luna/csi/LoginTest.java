@@ -1,7 +1,14 @@
 package com.luna.csi;
 
+import com.alibaba.fastjson.JSON;
 import com.google.common.collect.ImmutableMap;
+import com.luna.baidu.api.BaiduUserFaceApi;
+import com.luna.baidu.config.BaiduKeyGenerate;
+import com.luna.baidu.config.BaiduProperties;
+import com.luna.baidu.dto.face.UserFaceResultDTO;
 import com.luna.common.encrypt.Md5Utils;
+import com.luna.common.file.FileUtils;
+import com.luna.common.text.Base64Util;
 import com.luna.csi.entity.User;
 import com.luna.redis.util.RedisHashUtil;
 import org.junit.Test;
@@ -29,5 +36,18 @@ public class LoginTest {
     public void atest() {
         User user = new User();
         redisHashUtil.set("luna:session:", ImmutableMap.of("sessionKey", user));
+    }
+
+    @Autowired
+    private BaiduProperties baiduProperties;
+
+    @Test
+    public void btest() {
+        System.out.println(baiduProperties.getBaiduKey());
+        UserFaceResultDTO userFaceResultDTO = BaiduUserFaceApi.faceUserAdd(baiduProperties.getBaiduKey(),
+            Base64Util.encodeBase64(
+                FileUtils.readFileToBytes("/Users/luna_mac/csi/2021/05/07/4e732ced3463d06de0ca9a15b6153677.jpg")),
+            "BASE64", "luna-csi", "26");
+        System.out.println(JSON.toJSONString(userFaceResultDTO));
     }
 }

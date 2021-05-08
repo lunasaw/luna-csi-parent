@@ -145,30 +145,41 @@
 
 
 		function query() {
-
 			//把流媒体数据画到convas画布上去
 			context.drawImage(video, 0, 0, 530, 300);
-			var base = getBase64();
-
-			/*
+			let base = getBase64();
 			$.ajax({
-				type:"post",
-				url:"/hrm/user/faceLogin",
-				data:{"base":base},
+				type: "POST",
+				url: "/csi/user/api/faceLogin",
+				data: {"faceUrl": base},
 				dataType: "json",
-				success:function(json){
-					if(json.message==""){
-						$.MsgBox.Alert("消息","登录失败");
-					}else{
-						window.parent.location.replace("main");
+				success: function (result) {
+					console.log(result);
+					let data;
+					try {
+						data = checkResultAndGetData(result);
+					} catch (error) {
+						console.log(error)
+						alert(JSON.stringify(error));
+						return;
 					}
+					console.log(data);
+					if (data == null) {
+						return;
+					}
+					let index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
 
+					parent.layer.close(index); //再执行关闭
+					window.parent.location.replace('/csi/main');
+				}
+			});
+		}
 
-			  }
-		  });
-		  */
-
-			window.parent.location.replace("../main.html");
+		function checkResultAndGetData($result) {
+			if ($result.success == false) {
+				throw $result;
+			}
+			return $result.data;
 		}
 
 		function getBase64() {

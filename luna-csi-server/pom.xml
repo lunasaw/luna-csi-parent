@@ -87,5 +87,11 @@
             <artifactId>luna-common</artifactId>
             <version>1.0.8</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.github.czy1024</groupId>
+            <artifactId>baidu-spring-boot-starter</artifactId>
+            <version>1.0.8-RELEASE</version>
+        </dependency>
     </dependencies>
 </project>
