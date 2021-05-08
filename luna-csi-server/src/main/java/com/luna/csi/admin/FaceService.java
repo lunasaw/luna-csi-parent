@@ -1,12 +1,11 @@
 package com.luna.csi.admin;
 
-import com.alibaba.fastjson.JSON;
 import com.google.common.collect.ImmutableMap;
-import com.luna.baidu.api.BaiduBodyApi;
-import com.luna.baidu.api.BaiduFaceApi;
 import com.luna.baidu.api.BaiduUserFaceApi;
 import com.luna.baidu.config.BaiduProperties;
-import com.luna.baidu.dto.face.*;
+import com.luna.baidu.dto.face.UserFaceResultDTO;
+import com.luna.baidu.dto.face.UserInfoListDTO;
+import com.luna.baidu.dto.face.UserInfoResultDTO;
 import com.luna.common.date.DateUtil;
 import com.luna.common.dto.constant.ResultCode;
 import com.luna.common.encrypt.Md5Utils;
