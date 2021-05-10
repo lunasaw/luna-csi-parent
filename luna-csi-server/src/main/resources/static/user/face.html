@@ -106,7 +106,7 @@
 			<canvas id="canvas" width="530" height="300"></canvas>
 		</div>
 		<dd>
-			<input type="button" onclick="query()" value="立即注册"
+			<input type="button" id="btn-submit" value="立即注册"
 			       class="submit_btn"/>
 		</dd>
 
@@ -140,8 +140,7 @@
 				}
 			});
 
-
-		function query() {
+		$('#btn-submit').click(function () {
 			//把流媒体数据画到convas画布上去
 			context.drawImage(video, 0, 0, 530, 300);
 			let base = getBase64();
@@ -156,18 +155,14 @@
 					try {
 						data = checkResultAndGetData(result);
 					} catch (error) {
-						console.log(error)
-						alert(JSON.stringify(error));
-						return;
-					}
-					console.log(data);
-					if (data == null) {
+						$.ligerDialog.warn(result.message, "注册失败");
 						return;
 					}
 					$.MsgBox.Alert("消息", "注册成功");
 				}
 			});
-		}
+			$('#btn-submit').unbind('click');
+		});
 
 		function checkResultAndGetData($result) {
 			if ($result.success == false) {

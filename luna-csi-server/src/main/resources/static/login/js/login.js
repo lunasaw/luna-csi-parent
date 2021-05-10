@@ -43,6 +43,7 @@ $(function () {
         $('.form-signin').submit(function (e) {
             // 阻止默认提交
             e.preventDefault();
+            $("#login-submit-btn").unbind('click');
             $.ajax({
                 type: "POST",
                 url: "/csi/user/api/login",
@@ -54,12 +55,12 @@ $(function () {
                     $.MsgBox.Alert("消息", "出错了，请于管理员联系");
                 },
                 success: function (result) {
-                    console.log(result);
+                    // console.log(result);
                     let data;
                     try {
                         data = checkResultAndGetData(result);
                     } catch (error) {
-                        alert(JSON.stringify(error));
+                        $.MsgBox.Alert("登陆失败", result.message);
                         return;
                     }
 

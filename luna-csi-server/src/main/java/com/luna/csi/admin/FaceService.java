@@ -99,9 +99,8 @@ public class FaceService {
                 try {
                     Files.createDirectories(path);
                 } catch (IOException ignored) {
-
+                    throw new UserException(ResultCode.ERROR_SYSTEM_EXCEPTION, "保存人脸异常，请重试");
                 }
-
                 FileUtils.writeBytesToFile(Base64Util.decodeBase64(faceUrl), checkPath);
                 redisHashUtil.set(LoginInterceptor.sessionKey + ":" + nonceStrWithUUID,
                     ImmutableMap.of(nonceStrWithUUID, user));
