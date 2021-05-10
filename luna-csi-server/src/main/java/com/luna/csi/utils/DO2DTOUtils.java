@@ -5,9 +5,11 @@ import com.luna.common.date.DateUtil;
 import com.luna.csi.dto.AnnoDTO;
 import com.luna.csi.dto.DocumentDTO;
 import com.luna.csi.dto.EmpDTO;
+import com.luna.csi.dto.UserDTO;
 import com.luna.csi.entity.Anno;
 import com.luna.csi.entity.Document;
 import com.luna.csi.entity.Emp;
+import com.luna.csi.entity.User;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Objects;
@@ -72,8 +74,25 @@ public class DO2DTOUtils {
         annoDTO.setAnnoTitle(anno.getAnnoTitle());
         annoDTO.setAnnoContent(anno.getAnnoContent());
         annoDTO.setCreateTime(DateUtil.parseDateToStr(DateUtil.YYYY_MM_DD, anno.getCreateTime()));
-        annoDTO.setModifiedTime(DateUtil.parseDateToStr(DateUtil.YYYY_MM_DD, anno.getCreateTime()));
+        annoDTO.setModifiedTime(DateUtil.parseDateToStr(DateUtil.YYYY_MM_DD, anno.getModifiedTime()));
         annoDTO.setVersion(anno.getVersion());
         return annoDTO;
+    }
+
+    public static UserDTO User2UserDTO(User user) {
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(user.getId());
+        userDTO.setUsername(user.getUsername());
+        userDTO.setPassword(user.getPassword());
+        userDTO.setGender(user.getGender());
+        userDTO.setCellphone(user.getCellphone());
+        userDTO.setEmail(user.getEmail());
+        userDTO.setStatus(user.getStatus());
+        userDTO.setFaceurl(user.getFaceurl());
+        userDTO.setFacedata(user.getFacedata());
+        userDTO.setCreateTime(DateUtil.parseDateToStr(DateUtil.YYYY_MM_DD, user.getCreateTime()));
+        userDTO.setModifiedTime(DateUtil.parseDateToStr(DateUtil.YYYY_MM_DD, user.getModifiedTime()));
+        userDTO.setVersion(user.getVersion());
+        return userDTO;
     }
 }

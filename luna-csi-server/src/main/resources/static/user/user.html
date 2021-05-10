@@ -75,6 +75,7 @@
 							<td>用户名</td>
 							<td>电话</td>
 							<td>密码</td>
+							<td>人脸图像</td>
 							<td>邮箱</td>
 							<td>状态</td>
 							<td>性别</td>
@@ -263,6 +264,7 @@
 								'<td>' + list[i].username + '</td>' +
 								'<td>' + list[i].cellphone + '</td>' +
 								'<td>' + list[i].password + '</td>' +
+								'<td><img src="' + list[i].faceurl + '"  width="20px" height="20px" class="layui-upload-img" onclick="previewImg(this)"></td>' +
 								'<td>' + list[i].email + '</td>' +
 								'<td>' + (list[i].status == 0 ? '开启' : '关闭') + '</td>' +
 								'<td>' + (list[i].gender == 1 ? '男' : '女') + '</td>' +
@@ -278,6 +280,31 @@
 				}
 			});
 		}
+
+		function previewImg(obj) {
+			let img = new Image();
+			img.src = obj.src;
+			let height = img.height + 50; // 原图片大小
+			let width = img.width; //原图片大小
+			let imgHtml = "<img src='" + obj.src + "' width='650px' height='500px'/>";
+			//弹出层
+			$.ligerDialog.open({
+				type: 1,
+				shade: 0.8,
+				offset: 'auto',
+				width: 700,
+				area: [800 + 'px', 550 + 'px'],  // area: [width + 'px',height+'px']  //原图显示
+				//area: [width + 'px',height+'px'],
+				shadeClose: true,
+				scrollbar: false,
+				title: "图片预览", //不显示标题
+				content: imgHtml, //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响
+				cancel: function () {
+					//layer.msg('捕获就是从页面已经存在的元素上，包裹layer的结构', { time: 5000, icon: 6 });
+				}
+			});
+		}
+
 
 		function nextPage() {
 			pageStart = pageStart + 1;

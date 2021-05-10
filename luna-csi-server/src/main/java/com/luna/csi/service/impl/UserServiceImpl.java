@@ -2,18 +2,21 @@ package com.luna.csi.service.impl;
 
 import com.luna.common.dto.constant.ResultCode;
 import com.luna.common.encrypt.Md5Utils;
+import com.luna.csi.dto.UserDTO;
 import com.luna.csi.exception.UserException;
 import com.luna.csi.mapper.UserMapper;
 import com.luna.csi.service.UserService;
 import com.luna.csi.entity.User;
 import javax.annotation.Resource;
 
+import com.luna.csi.utils.DO2DTOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @Author: luna
@@ -44,7 +47,10 @@ public class UserServiceImpl implements UserService {
     public PageInfo listPageByEntity(int page, int pageSize, User user) {
         PageHelper.startPage(page, pageSize);
         List<User> list = userMapper.listByEntity(user);
-        return new PageInfo(list);
+        PageInfo pageInfo = new PageInfo(list);
+        List<UserDTO> collect = list.stream().map(DO2DTOUtils::User2UserDTO).collect(Collectors.toList());
+        pageInfo.setList(collect);
+        return pageInfo;
     }
 
     @Override

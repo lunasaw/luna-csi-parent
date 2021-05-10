@@ -9,7 +9,6 @@ import com.luna.common.net.HttpUtilsConstant;
 import com.luna.csi.entity.User;
 import com.luna.csi.utils.CookieUtils;
 import com.luna.redis.util.RedisHashUtil;
-import com.sun.tools.internal.ws.wsdl.document.http.HTTPConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

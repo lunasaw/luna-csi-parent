@@ -13,6 +13,7 @@ import com.luna.common.file.FileUtils;
 import com.luna.common.text.Base64Util;
 import com.luna.common.text.RandomStrUtil;
 import com.luna.csi.config.LoginInterceptor;
+import com.luna.csi.controller.CommonController;
 import com.luna.csi.entity.User;
 import com.luna.csi.exception.UserException;
 import com.luna.csi.mapper.UserMapper;
@@ -25,6 +26,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 /**
@@ -38,7 +43,7 @@ public class FaceService {
     /** 人员组名 */
     public static final String  LUNA_CSI = "luna_csi";
     /** 控制检测分数 */
-    public static final int     SCORE    = 80;
+    public static final int     SCORE    = 90;
 
     @Autowired
     private UserMapper          userMapper;
@@ -63,7 +68,8 @@ public class FaceService {
         FileUtils.writeBytesToFile(Base64Util.decodeBase64(faceUrl), path);
         UserFaceResultDTO userFaceResultDTO = BaiduUserFaceApi.faceUserAdd(baiduProperties.getBaiduKey(),
             faceUrl, "BASE64", LUNA_CSI, String.valueOf(byId.getId()));
-        user.setFacedata(userFaceResultDTO.getFaceToken());
+        byId.setFacedata(userFaceResultDTO.getFaceToken());
+        byId.setFaceurl(CommonController.PATH + path);
         return userMapper.update(byId) == 1;
     }
 
@@ -85,12 +91,18 @@ public class FaceService {
                 // 登陆图片
                 String checkPath = FileUploadUtils.getDefaultBaseDir() + "/" + DateUtil.datePath() + "/"
                     + Md5Utils.md5(String.valueOf(user.getId())) + ".jpg";
-                if (!FileUtils.isFileExists(checkPath)) {
-                    File parentDir = new File(new File(checkPath).getParent());
-                    parentDir.mkdir();
-                }
-                FileUtils.writeBytesToFile(Base64Util.decodeBase64(faceUrl), checkPath);
 
+                Path path = Paths.get(checkPath);
+                if (!Files.isDirectory(path)) {
+                    path = path.getParent();
+                }
+                try {
+                    Files.createDirectories(path);
+                } catch (IOException ignored) {
+
+                }
+
+                FileUtils.writeBytesToFile(Base64Util.decodeBase64(faceUrl), checkPath);
                 redisHashUtil.set(LoginInterceptor.sessionKey + ":" + nonceStrWithUUID,
                     ImmutableMap.of(nonceStrWithUUID, user));
                 redisKeyUtil.expire(LoginInterceptor.sessionKey + ":" + nonceStrWithUUID,
