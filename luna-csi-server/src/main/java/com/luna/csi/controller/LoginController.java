@@ -36,7 +36,7 @@ public class LoginController {
         if (Objects.equals(loginReq.getRememberPwd(), "on")) {
             cookie.setMaxAge(7 * 60 * 60 * LoginService.SESSION_EXPIRED_HOUR);
         } else {
-            cookie.setMaxAge(60 * 60);
+            cookie.setMaxAge(60 * 60 * LoginService.SESSION_EXPIRED_HOUR);
         }
         response.addCookie(cookie);
         return new ResultDTO<>(true, ResultCode.SUCCESS, ResultCode.MSG_SUCCESS, sessionKey);

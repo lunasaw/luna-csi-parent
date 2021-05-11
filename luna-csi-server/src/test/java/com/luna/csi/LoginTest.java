@@ -3,7 +3,6 @@ package com.luna.csi;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.ImmutableMap;
 import com.luna.baidu.api.BaiduUserFaceApi;
-import com.luna.baidu.config.BaiduKeyGenerate;
 import com.luna.baidu.config.BaiduProperties;
 import com.luna.baidu.dto.face.UserFaceResultDTO;
 import com.luna.common.encrypt.Md5Utils;
@@ -14,6 +13,7 @@ import com.luna.redis.util.RedisHashUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 

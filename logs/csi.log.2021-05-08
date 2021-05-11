@@ -1,9 +1,0 @@
-2021-05-08 08:35:23,551  INFO [main] (StartupInfoLogger.java:55) - Starting CsiApplication on lunas-mac.local with PID 1474 (/Users/luna_mac/Documents/luna-project/luna-csi/luna-csi-server/target/classes started by luna_mac in /Users/luna_mac/Documents/luna-project/luna-csi) 
-2021-05-08 08:35:23,557  INFO [main] (SpringApplication.java:651) - No active profile set, falling back to default profiles: default 
-2021-05-08 08:35:28,009  INFO [main] (StartupInfoLogger.java:61) - Started CsiApplication in 5.217 seconds (JVM running for 21.704) 
-2021-05-08 10:26:16,769  INFO [main] (StartupInfoLogger.java:55) - Starting CsiApplication on lunas-mac.local with PID 54812 (/Users/luna_mac/Documents/luna-project/luna-csi/luna-csi-server/target/classes started by luna_mac in /Users/luna_mac/Documents/luna-project/luna-csi) 
-2021-05-08 10:26:16,775  INFO [main] (SpringApplication.java:651) - No active profile set, falling back to default profiles: default 
-2021-05-08 10:26:21,520  INFO [main] (StartupInfoLogger.java:61) - Started CsiApplication in 5.649 seconds (JVM running for 7.581) 
-2021-05-08 10:54:22,544  INFO [main] (StartupInfoLogger.java:55) - Starting CsiApplication on lunas-mac.local with PID 69853 (/Users/luna_mac/Documents/luna-project/luna-csi/luna-csi-server/target/classes started by luna_mac in /Users/luna_mac/Documents/luna-project/luna-csi) 
-2021-05-08 10:54:22,549  INFO [main] (SpringApplication.java:651) - No active profile set, falling back to default profiles: default 
-2021-05-08 10:54:26,915  INFO [main] (StartupInfoLogger.java:61) - Started CsiApplication in 5.379 seconds (JVM running for 17.537) 

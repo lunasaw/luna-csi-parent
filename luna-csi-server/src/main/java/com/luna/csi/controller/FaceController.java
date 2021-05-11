@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Objects;
 
 /**
  * @author luna@mac
@@ -37,7 +36,7 @@ public class FaceController {
         String sessionKey = faceService.login(faceUrl);
         Cookie cookie = new Cookie(CookieUtils.SESSION_KEY_NAME, sessionKey);
         cookie.setPath("/");
-        cookie.setMaxAge(60 * 60);
+        cookie.setMaxAge(60 * 60 * LoginService.SESSION_EXPIRED_HOUR);
         response.addCookie(cookie);
         return new ResultDTO<>(true, ResultCode.SUCCESS, ResultCode.MSG_SUCCESS, sessionKey);
     }
