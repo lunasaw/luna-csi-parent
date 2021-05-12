@@ -73,6 +73,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int insertBatch(List<User> list) {
+        list.forEach(user -> user.setPassword(Md5Utils.md5(Md5Utils.md5(user.getPassword()))));
         return userMapper.insertBatch(list);
     }
 
@@ -84,7 +85,6 @@ public class UserServiceImpl implements UserService {
         }
         byEntity.setUsername(user.getUsername());
         byEntity.setGender(user.getGender());
-        byEntity.setPassword(user.getPassword());
         byEntity.setCellphone(user.getCellphone());
         byEntity.setEmail(user.getEmail());
         byEntity.setStatus(user.getStatus());
@@ -95,6 +95,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int updateBatch(List<User> list) {
+        list.forEach(user -> {
+            User byEntity = userMapper.getById(user.getId());
+            if (byEntity == null) {
+                throw new UserException(ResultCode.PARAMETER_INVALID, "用户不存在");
+            }
+            user.setPassword(Md5Utils.md5(Md5Utils.md5(user.getPassword())));
+        });
         return userMapper.updateBatch(list);
     }
 

@@ -56,6 +56,10 @@ public class LoginService {
         return nonceStrWithUUID;
     }
 
+    public static void main(String[] args) {
+        System.out.println(Md5Utils.md5(Md5Utils.md5("admin123")));
+    }
+
     public User sysUser(String sessionKey) {
         return (User)redisHashUtil.get(LoginInterceptor.sessionKey + ":" + sessionKey, sessionKey);
     }
