@@ -109,8 +109,7 @@ public class FaceService {
                 redisHashUtil.set(LoginInterceptor.sessionKey + ":" + nonceStrWithUUID,
                     ImmutableMap.of(nonceStrWithUUID, user));
                 redisKeyUtil.expire(LoginInterceptor.sessionKey + ":" + nonceStrWithUUID,
-                    LoginService.SESSION_TIME * LoginService.SESSION_EXPIRED,
-                    null);
+                    LoginService.SESSION_TIME * LoginService.SESSION_EXPIRED);
             }
         });
         return nonceStrWithUUID;

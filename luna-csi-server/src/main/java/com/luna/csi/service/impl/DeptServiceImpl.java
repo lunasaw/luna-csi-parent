@@ -40,17 +40,17 @@ public class DeptServiceImpl implements DeptService {
     }
 
     @Override
-    public PageInfo listPageByEntity(int page, int pageSize, Dept dept) {
+    public PageInfo<Dept> listPageByEntity(int page, int pageSize, Dept dept) {
         PageHelper.startPage(page, pageSize);
         List<Dept> list = deptMapper.listByEntity(dept);
-        return new PageInfo(list);
+        return new PageInfo<Dept>(list);
     }
 
     @Override
-    public PageInfo listPage(int page, int pageSize) {
+    public PageInfo<Dept> listPage(int page, int pageSize) {
         PageHelper.startPage(page, pageSize);
         List<Dept> list = deptMapper.listByEntity(new Dept());
-        return new PageInfo(list);
+        return new PageInfo<Dept>(list);
     }
 
     @Override

@@ -45,7 +45,7 @@ public interface DeptService {
      * @param pageSize 查询条目
      * @return 对象列表
      */
-    PageInfo listPageByEntity(int page, int pageSize, Dept dept);
+    PageInfo<Dept> listPageByEntity(int page, int pageSize, Dept dept);
 
     /**
      * 条件分页查询
@@ -54,7 +54,7 @@ public interface DeptService {
      * @param pageSize 查询条目
      * @return 对象列表
      */
-    PageInfo listPage(int page, int pageSize);
+    PageInfo<Dept> listPage(int page, int pageSize);
 
     /**
      * Id列表查询对象列表

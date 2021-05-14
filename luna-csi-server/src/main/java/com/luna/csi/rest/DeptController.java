@@ -38,16 +38,16 @@ public class DeptController {
     }
 
     @GetMapping("/pageListByEntity/{page}/{size}")
-    public ResultDTO<PageInfo> listPageByEntity(@PathVariable(value = "page") int page,
+    public ResultDTO<PageInfo<Dept>> listPageByEntity(@PathVariable(value = "page") int page,
         @PathVariable(value = "size") int size, Dept dept) {
-        PageInfo pageInfo = deptService.listPageByEntity(page, size, dept);
+        PageInfo<Dept> pageInfo = deptService.listPageByEntity(page, size, dept);
         return new ResultDTO<>(true, ResultCode.SUCCESS, ResultCode.MSG_SUCCESS, pageInfo);
     }
 
     @GetMapping("/pageList/{page}/{size}")
-    public ResultDTO<PageInfo> listPage(@PathVariable(value = "page") int page,
+    public ResultDTO<PageInfo<Dept>> listPage(@PathVariable(value = "page") int page,
         @PathVariable(value = "size") int size) {
-        PageInfo pageInfo = deptService.listPage(page, size);
+        PageInfo<Dept> pageInfo = deptService.listPage(page, size);
         return new ResultDTO<>(true, ResultCode.SUCCESS, ResultCode.MSG_SUCCESS, pageInfo);
     }
 

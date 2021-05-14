@@ -51,9 +51,9 @@ public class AnnoController {
     }
 
     @GetMapping("/pageList/{page}/{size}")
-    public ResultDTO<PageInfo> listPage(@PathVariable(value = "page") int page,
+    public ResultDTO<PageInfo<Anno>> listPage(@PathVariable(value = "page") int page,
         @PathVariable(value = "size") int size) {
-        PageInfo pageInfo = annoService.listPage(page, size);
+        PageInfo<Anno> pageInfo = annoService.listPage(page, size);
         return new ResultDTO<>(true, ResultCode.SUCCESS, ResultCode.MSG_SUCCESS, pageInfo);
     }
 

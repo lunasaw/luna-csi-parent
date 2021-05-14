@@ -67,10 +67,10 @@ public class AnnoServiceImpl implements AnnoService {
     }
 
     @Override
-    public PageInfo listPage(int page, int pageSize) {
+    public PageInfo<Anno> listPage(int page, int pageSize) {
         PageHelper.startPage(page, pageSize);
         List<Anno> list = annoMapper.listByEntity(new Anno());
-        return new PageInfo(list);
+        return new PageInfo<Anno>(list);
     }
 
     @Override
