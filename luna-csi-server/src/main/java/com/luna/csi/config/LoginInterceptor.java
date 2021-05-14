@@ -34,6 +34,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         if (oneSessionKey == null) {
             // 若不满验证，则直接跳转到登录界面
             response.sendRedirect(request.getContextPath() + "/login");
+            return true;
         }
         User user = (User)redisHashUtil.get(LoginInterceptor.sessionKey + ":" + oneSessionKey, oneSessionKey);
         if (user == null) {

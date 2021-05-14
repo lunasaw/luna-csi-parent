@@ -26,17 +26,17 @@ public class FaceController {
     private FaceService faceService;
 
     @PostMapping("/registerFace")
-    public ResultDTO<Boolean> registerFace(HttpServletRequest request, String faceUrl) {
+    public ResultDTO<Boolean> registerFace(HttpServletRequest request, String faceBase64) {
         return new ResultDTO<>(true, ResultCode.SUCCESS, ResultCode.MSG_SUCCESS,
-            faceService.registerFace(CookieUtils.getOneSessionKey(request), faceUrl));
+            faceService.registerFace(CookieUtils.getOneSessionKey(request), faceBase64));
     }
 
     @PostMapping("/faceLogin")
-    public ResultDTO<String> checkFace(HttpServletResponse response, String faceUrl) {
-        String sessionKey = faceService.login(faceUrl);
+    public ResultDTO<String> checkFace(HttpServletResponse response, String faceBase64) {
+        String sessionKey = faceService.login(faceBase64);
         Cookie cookie = new Cookie(CookieUtils.SESSION_KEY_NAME, sessionKey);
         cookie.setPath("/");
-        cookie.setMaxAge(60 * 60 * LoginService.SESSION_EXPIRED_HOUR);
+        cookie.setMaxAge(LoginService.SESSION_TIME);
         response.addCookie(cookie);
         return new ResultDTO<>(true, ResultCode.SUCCESS, ResultCode.MSG_SUCCESS, sessionKey);
     }

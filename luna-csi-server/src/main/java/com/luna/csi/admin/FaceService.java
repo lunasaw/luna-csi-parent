@@ -25,7 +25,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -57,31 +56,46 @@ public class FaceService {
     @Autowired
     private RedisKeyUtil        redisKeyUtil;
 
-    public Boolean registerFace(String sessionKey, String faceUrl) {
+    public Boolean registerFace(String sessionKey, String base64) {
         User user = (User)redisHashUtil.get(LoginInterceptor.sessionKey + ":" + sessionKey, sessionKey);
         User byId = userMapper.getById(user.getId());
         if (byId == null) {
             throw new UserException(ResultCode.PARAMETER_INVALID, "用户不存在");
         }
-        String path = FileUploadUtils.getDefaultBaseDir() + "/" + DateUtil.datePath() + "/"
-            + Md5Utils.md5(String.valueOf(user.getId())) + ".jpg";
-        FileUtils.writeBytesToFile(Base64Util.decodeBase64(faceUrl), path);
+        String checkPath = getPath(base64, user);
         UserFaceResultDTO userFaceResultDTO = BaiduUserFaceApi.faceUserAdd(baiduProperties.getBaiduKey(),
-            faceUrl, "BASE64", LUNA_CSI, String.valueOf(byId.getId()));
+            base64, "BASE64", LUNA_CSI, String.valueOf(byId.getId()));
         byId.setFacedata(userFaceResultDTO.getFaceToken());
-        byId.setFaceurl(CommonController.PATH + path);
+        byId.setFaceurl(CommonController.PATH + checkPath);
         return userMapper.update(byId) == 1;
+    }
+
+    private String getPath(String base64, User user) {
+        String checkPath = FileUploadUtils.getDefaultBaseDir() + "/" + DateUtil.datePath() + "/"
+            + Md5Utils.md5(String.valueOf(user.getId())) + ".jpg";
+
+        Path path = Paths.get(checkPath);
+        if (!Files.isDirectory(path)) {
+            path = path.getParent();
+        }
+        try {
+            Files.createDirectories(path);
+        } catch (IOException ignored) {
+            throw new UserException(ResultCode.ERROR_SYSTEM_EXCEPTION, "保存人脸异常，请重试");
+        }
+        FileUtils.writeBytesToFile(Base64Util.decodeBase64(base64), checkPath);
+        return checkPath;
     }
 
     /**
      * 人脸检查
      * 
-     * @param faceUrl
+     * @param base64
      * @return
      */
-    public String login(String faceUrl) {
+    public String login(String base64) {
         UserInfoListDTO userInfoListDTO =
-            BaiduUserFaceApi.userFaceSearch(baiduProperties.getBaiduKey(), faceUrl, "BASE64", LUNA_CSI);
+            BaiduUserFaceApi.userFaceSearch(baiduProperties.getBaiduKey(), base64, "BASE64", LUNA_CSI);
         List<UserInfoResultDTO> userList = userInfoListDTO.getUserList();
         String nonceStrWithUUID = RandomStrUtil.generateNonceStrWithUUID();
         userList.forEach(userInfoResultDTO -> {
@@ -89,23 +103,13 @@ public class FaceService {
                 long l = Long.parseLong(userInfoResultDTO.getUserId());
                 User user = userMapper.getById(l);
                 // 登陆图片
-                String checkPath = FileUploadUtils.getDefaultBaseDir() + "/" + DateUtil.datePath() + "/"
-                    + Md5Utils.md5(String.valueOf(user.getId())) + ".jpg";
-
-                Path path = Paths.get(checkPath);
-                if (!Files.isDirectory(path)) {
-                    path = path.getParent();
-                }
-                try {
-                    Files.createDirectories(path);
-                } catch (IOException ignored) {
-                    throw new UserException(ResultCode.ERROR_SYSTEM_EXCEPTION, "保存人脸异常，请重试");
-                }
-                FileUtils.writeBytesToFile(Base64Util.decodeBase64(faceUrl), checkPath);
+                String checkPath = getPath(base64, user);
+                user.setFaceurl(CommonController.PATH + checkPath);
+                userMapper.update(user);
                 redisHashUtil.set(LoginInterceptor.sessionKey + ":" + nonceStrWithUUID,
                     ImmutableMap.of(nonceStrWithUUID, user));
                 redisKeyUtil.expire(LoginInterceptor.sessionKey + ":" + nonceStrWithUUID,
-                    7 * 60 * 60 * LoginService.SESSION_EXPIRED_HOUR,
+                    LoginService.SESSION_TIME * LoginService.SESSION_EXPIRED,
                     null);
             }
         });

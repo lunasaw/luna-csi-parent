@@ -7,7 +7,6 @@ import com.luna.csi.entity.User;
 import com.luna.csi.req.EditPasswordReq;
 import com.luna.csi.req.LoginReq;
 import com.luna.csi.utils.CookieUtils;
-import com.luna.redis.util.RedisHashUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,9 +33,9 @@ public class LoginController {
         Cookie cookie = new Cookie(CookieUtils.SESSION_KEY_NAME, sessionKey);
         cookie.setPath("/");
         if (Objects.equals(loginReq.getRememberPwd(), "on")) {
-            cookie.setMaxAge(7 * 60 * 60 * LoginService.SESSION_EXPIRED_HOUR);
+            cookie.setMaxAge(LoginService.SESSION_TIME * LoginService.SESSION_EXPIRED);
         } else {
-            cookie.setMaxAge(60 * 60 * LoginService.SESSION_EXPIRED_HOUR);
+            cookie.setMaxAge(LoginService.SESSION_TIME);
         }
         response.addCookie(cookie);
         return new ResultDTO<>(true, ResultCode.SUCCESS, ResultCode.MSG_SUCCESS, sessionKey);

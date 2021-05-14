@@ -147,7 +147,7 @@
 			$.ajax({
 				type: "POST",
 				url: "/csi/user/api/registerFace",
-				data: {"faceUrl": base},
+				data: {"faceBase64": base},
 				dataType: "json",
 				success: function (result) {
 					console.log(result);

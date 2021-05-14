@@ -5,11 +5,9 @@ import com.luna.common.dto.constant.ResultCode;
 import com.luna.common.encrypt.Md5Utils;
 import com.luna.common.text.RandomStrUtil;
 import com.luna.csi.config.LoginInterceptor;
-import com.luna.csi.controller.LoginController;
 import com.luna.csi.entity.User;
 import com.luna.csi.exception.UserException;
 import com.luna.csi.service.UserService;
-import com.luna.csi.utils.CookieUtils;
 import com.luna.redis.util.RedisHashUtil;
 import com.luna.redis.util.RedisKeyUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -26,16 +24,18 @@ import java.util.Collections;
 public class LoginService {
 
     @Autowired
-    private UserService   userService;
+    private UserService     userService;
 
     @Autowired
-    private RedisHashUtil redisHashUtil;
+    private RedisHashUtil   redisHashUtil;
 
     @Autowired
-    private RedisKeyUtil  redisKeyUtil;
+    private RedisKeyUtil    redisKeyUtil;
 
-    /** session过期时间，单位小时 */
-    public static int     SESSION_EXPIRED_HOUR = 24;
+    public static final int SESSION_TIME    = 24 * 60 * 60;
+
+    /** session过期时间，单位天 */
+    public static final int SESSION_EXPIRED = 7;
 
     public String login(String username, String password) {
         User user = userService.getByEntity(new User(username));
@@ -51,7 +51,7 @@ public class LoginService {
         String nonceStrWithUUID = RandomStrUtil.generateNonceStrWithUUID();
         redisHashUtil.set(LoginInterceptor.sessionKey + ":" + nonceStrWithUUID,
             ImmutableMap.of(nonceStrWithUUID, user));
-        redisKeyUtil.expire(LoginInterceptor.sessionKey + ":" + nonceStrWithUUID, 7 * 60 * 60 * SESSION_EXPIRED_HOUR,
+        redisKeyUtil.expire(LoginInterceptor.sessionKey + ":" + nonceStrWithUUID, SESSION_TIME * SESSION_EXPIRED,
             null);
         return nonceStrWithUUID;
     }
