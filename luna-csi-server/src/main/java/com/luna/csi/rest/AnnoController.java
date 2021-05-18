@@ -8,6 +8,7 @@ import com.luna.common.dto.constant.ResultCode;
 import com.luna.csi.utils.CookieUtils;
 import com.luna.redis.util.RedisHashUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import com.luna.csi.entity.Anno;
@@ -93,7 +94,7 @@ public class AnnoController {
     @DeleteMapping("/delete")
     public ResultDTO<Integer> deleteBatch(@RequestBody List<Long> ids) {
         int result = 0;
-        if (ids != null && ids.size() > 0) {
+        if (!CollectionUtils.isEmpty(ids)) {
             result = annoService.deleteByIds(ids);
         }
         return new ResultDTO<>(true, ResultCode.SUCCESS, ResultCode.MSG_SUCCESS, result);
