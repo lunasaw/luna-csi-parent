@@ -13,3 +13,12 @@ luna-csi
 - 后端代码非特殊情况准守P3C插件规范
 - 注释要尽可能完整明晰，提交的代码必须要先格式化
 - xml文件和前端一样，使用TAB缩进
+
+# 
+```bash
+docker run -d \
+    --name luna-csi \
+    -v /root/openresty/root/luna/csi:/root/luna/csi \
+    -p 8083:8083 \
+    luna-csi`
+```

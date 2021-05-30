@@ -1,7 +1,6 @@
 package com.luna.csi.utils;
 
 import com.luna.common.reflect.ConvertUtil;
-import com.sun.tools.javac.util.Convert;
 
 /**
  * 字符串格式化

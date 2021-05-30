@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 public class CommonController {
 
     /** Nginx 文件服务器 */
-    public static final String  PATH = "http://127.0.0.1:8081";
+    public static final String  PATH = "http://106.14.30.12:82";
 
     @Autowired
     private DocumentService     documentService;

@@ -32,7 +32,7 @@ public class FileUploadUtils {
     /**
      * 默认上传的地址
      */
-    public static String     defaultBaseDir           = "/Users/luna/Document/project/csi";
+    public static String     defaultBaseDir           = "/root/luna/csi";
 
     public static void setDefaultBaseDir(String defaultBaseDir) {
         FileUploadUtils.defaultBaseDir = defaultBaseDir;
