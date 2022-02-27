@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import com.luna.common.date.DateUtil;
 import com.luna.common.text.RandomStrUtil;
+import com.luna.csi.admin.FaceService;
 import com.luna.csi.exception.FileNameLengthLimitExceededException;
 import com.luna.csi.exception.FileSizeLimitExceededException;
 import com.luna.csi.exception.InvalidExtensionException;
@@ -22,25 +23,14 @@ public class FileUploadUtils {
     /**
      * 默认大小 50M
      */
-    public static final long DEFAULT_MAX_SIZE         = 50 * 1024 * 1024;
+    public static final long   DEFAULT_MAX_SIZE         = 50 * 1024 * 1024;
 
     /**
      * 默认的文件名最大长度 100
      */
-    public static final int  DEFAULT_FILE_NAME_LENGTH = 100;
+    public static final int    DEFAULT_FILE_NAME_LENGTH = 100;
 
-    /**
-     * 默认上传的地址
-     */
-    public static String     defaultBaseDir           = "/root/luna/csi";
-
-    public static void setDefaultBaseDir(String defaultBaseDir) {
-        FileUploadUtils.defaultBaseDir = defaultBaseDir;
-    }
-
-    public static String getDefaultBaseDir() {
-        return defaultBaseDir;
-    }
+    public static final String DEFAULT_FILE_PATH        = "/Users/luna/Document/project/csi";
 
     /**
      * 以默认配置进行文件上传
@@ -49,9 +39,9 @@ public class FileUploadUtils {
      * @return 文件名称
      * @throws Exception
      */
-    public static final String upload(MultipartFile file) throws IOException {
+    public static String upload(MultipartFile file) throws IOException {
         try {
-            return upload(getDefaultBaseDir(), file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
+            return upload(DEFAULT_FILE_PATH, file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
         } catch (Exception e) {
             throw new IOException(e.getMessage(), e);
         }
@@ -65,7 +55,7 @@ public class FileUploadUtils {
      * @return 文件名称
      * @throws IOException
      */
-    public static final String upload(String baseDir, MultipartFile file) throws IOException {
+    public static String upload(String baseDir, MultipartFile file) throws IOException {
         try {
             return upload(baseDir, file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
         } catch (Exception e) {
@@ -139,10 +129,10 @@ public class FileUploadUtils {
      * @throws FileSizeLimitExceededException 如果超出最大大小
      * @throws InvalidExtensionException
      */
-    public static final void assertAllowed(MultipartFile file, String[] allowedExtension)
+    public static void assertAllowed(MultipartFile file, String[] allowedExtension)
         throws FileSizeLimitExceededException, InvalidExtensionException {
         long size = file.getSize();
-        if (DEFAULT_MAX_SIZE != -1 && size > DEFAULT_MAX_SIZE) {
+        if (size > DEFAULT_MAX_SIZE) {
             throw new FileSizeLimitExceededException(DEFAULT_MAX_SIZE / 1024 / 1024);
         }
 

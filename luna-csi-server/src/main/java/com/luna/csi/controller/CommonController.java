@@ -2,22 +2,19 @@ package com.luna.csi.controller;
 
 import com.luna.common.dto.ResultDTO;
 import com.luna.common.dto.constant.ResultCode;
-import com.luna.csi.config.ServerConfig;
+import com.luna.csi.admin.FaceService;
 import com.luna.csi.entity.Document;
 import com.luna.csi.service.DocumentService;
 import com.luna.csi.utils.CookieUtils;
 import com.luna.csi.utils.FileUploadUtils;
-import com.luna.csi.utils.FileUtils;
-import com.luna.csi.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author luna@mac
@@ -27,13 +24,13 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/document")
 public class CommonController {
 
-    /** Nginx 文件服务器 */
-    public static final String  PATH = "http://106.14.30.12:82";
+    @Autowired
+    private FaceService         faceService;
 
     @Autowired
     private DocumentService     documentService;
 
-    private static final Logger log  = LoggerFactory.getLogger(CommonController.class);
+    private static final Logger log = LoggerFactory.getLogger(CommonController.class);
 
     /**
      * 通用上传请求
@@ -44,8 +41,8 @@ public class CommonController {
         MultipartFile file) {
         try {
             // 上传并返回新文件名称
-            String fileName = FileUploadUtils.upload(file);
-            String url = PATH + fileName;
+            String fileName = FileUploadUtils.upload(faceService.getDefaultBaseDir(), file);
+            String url = faceService.host + fileName;
             document.setFileUrl(url);
             if (document.getId() != null) {
                 Document byId = documentService.getById(document.getId());

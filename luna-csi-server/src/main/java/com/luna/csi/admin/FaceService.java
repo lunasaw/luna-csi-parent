@@ -23,6 +23,7 @@ import com.luna.redis.util.RedisKeyUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -38,23 +39,50 @@ import java.util.List;
 @Service
 public class FaceService {
 
-    private static final Logger log      = LoggerFactory.getLogger(FaceService.class);
+    private static final Logger log            = LoggerFactory.getLogger(FaceService.class);
     /** 人员组名 */
-    public static final String  LUNA_CSI = "luna_csi";
+    public static final String  LUNA_CSI       = "luna_csi";
     /** 控制检测分数 */
-    public static final int     SCORE    = 90;
+    public static final int     SCORE          = 90;
+    /** Nginx 文件服务器 */
+    public static final String  DEFAULT_HOST   = "http://106.14.30.12:82";
+
+    /**
+     * 默认上传的地址
+     */
+    @Value("${luna.csi.upload}")
+    public String               defaultBaseDir = "/root/luna/csi";
+
+    @Value("${luna.csi.host}")
+    public String               host           = DEFAULT_HOST;
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public void setDefaultBaseDir(String defaultBaseDir) {
+        this.defaultBaseDir = defaultBaseDir;
+    }
+
+    public String getDefaultBaseDir() {
+        return defaultBaseDir;
+    }
 
     @Autowired
-    private UserMapper          userMapper;
+    private UserMapper      userMapper;
 
     @Autowired
-    private RedisHashUtil       redisHashUtil;
+    private RedisHashUtil   redisHashUtil;
 
     @Autowired
-    private BaiduProperties     baiduProperties;
+    private BaiduProperties baiduProperties;
 
     @Autowired
-    private RedisKeyUtil        redisKeyUtil;
+    private RedisKeyUtil    redisKeyUtil;
 
     public Boolean registerFace(String sessionKey, String base64) {
         User user = (User)redisHashUtil.get(LoginInterceptor.sessionKey + ":" + sessionKey, sessionKey);
@@ -62,16 +90,16 @@ public class FaceService {
         if (byId == null) {
             throw new UserException(ResultCode.PARAMETER_INVALID, "用户不存在");
         }
-        String checkPath = getPath(base64, user);
+        String checkPath = getPath(defaultBaseDir, base64, user);
         UserFaceResultDTO userFaceResultDTO = BaiduUserFaceApi.faceUserAdd(baiduProperties.getBaiduKey(),
             base64, "BASE64", LUNA_CSI, String.valueOf(byId.getId()));
         byId.setFacedata(userFaceResultDTO.getFaceToken());
-        byId.setFaceurl(CommonController.PATH + checkPath);
+        byId.setFaceurl(host + checkPath);
         return userMapper.update(byId) == 1;
     }
 
-    private String getPath(String base64, User user) {
-        String checkPath = FileUploadUtils.getDefaultBaseDir() + "/" + DateUtil.datePath() + "/"
+    private String getPath(String dir, String base64, User user) {
+        String checkPath = dir + "/" + DateUtil.datePath() + "/"
             + Md5Utils.md5(String.valueOf(user.getId())) + ".jpg";
 
         Path path = Paths.get(checkPath);
@@ -103,8 +131,8 @@ public class FaceService {
                 long l = Long.parseLong(userInfoResultDTO.getUserId());
                 User user = userMapper.getById(l);
                 // 登陆图片
-                String checkPath = getPath(base64, user);
-                user.setFaceurl(CommonController.PATH + checkPath);
+                String checkPath = getPath(defaultBaseDir, base64, user);
+                user.setFaceurl(host + checkPath);
                 userMapper.update(user);
                 redisHashUtil.set(LoginInterceptor.sessionKey + ":" + nonceStrWithUUID,
                     ImmutableMap.of(nonceStrWithUUID, user));
